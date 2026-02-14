@@ -54,25 +54,41 @@ Return ONLY a valid JSON object (no markdown fences) with these exact keys:
         - Where relevant, include short Python/pseudocode snippets wrapped in backticks
         - Industry references and practical advice)
 - "conclusion": string (3-4 paragraphs summarizing key takeaways, future outlook, and actionable next steps)
-- "diagram_nodes": array of 8-12 objects representing a detailed workflow/architecture, each with:
+- "diagram_nodes": array of 10-14 objects representing a detailed, professional architecture/workflow diagram. Each node:
     - "id": string (unique, e.g. "node_1")
-    - "label": string (descriptive label, max 5 words)
-    - "x": number (x position; use a multi-column layout: column 1 at x=50, column 2 at x=300, column 3 at x=550; rows spaced 120px apart starting at y=50)
+    - "label": string (concise label, 2-4 words, e.g. "Input Validation", "LLM Gateway", "Response Filter")
+    - "description": string (1 short sentence explaining what this step does, e.g. "Validates and sanitizes all user inputs before processing")
+    - "x": number (x position — use a LAYERED LAYOUT with these columns:
+        Column 1 (entry): x=50
+        Column 2 (processing): x=300
+        Column 3 (core): x=550
+        Column 4 (output): x=800
+        Rows spaced 140px apart, starting at y=30)
     - "y": number (y position)
-    - "node_type": string (use "input" for entry points, "output" for final outputs, "default" for processing steps)
-- "diagram_edges": array of 10-15 objects connecting the nodes to show the complete flow, each with:
+    - "node_type": string — MUST be one of:
+        "input" — for entry points and data sources (1-2 nodes)
+        "output" — for final outputs and results (1-2 nodes)
+        "decision" — for branching/conditional logic points (1-3 nodes)
+        "default" — for all other processing steps
+- "diagram_edges": array of 12-18 objects connecting the nodes. Each edge:
     - "id": string (unique, e.g. "edge_1_2")
     - "source": string (source node id)
     - "target": string (target node id)
-    - "label": string (descriptive edge label explaining the data/action flow, max 6 words)
-    - "animated": boolean (true for primary/critical flow paths, false for secondary/optional paths)
+    - "label": string (action/data label on the arrow, 2-5 words, e.g. "validated request", "on failure", "raw response")
+    - "animated": boolean (true for the main/happy-path flow, false for error paths, fallbacks, and feedback loops)
+    - "edge_type": string — one of:
+        "smoothstep" — for most connections (clean right-angle routing)
+        "bezier" — for feedback loops or backwards connections
+        "straight" — for direct short connections
 
-IMPORTANT for the diagram:
-- The diagram must comprehensively represent the architecture or workflow described in the article
-- Include branching paths where appropriate (not just a linear chain)
-- Show feedback loops or error handling paths where relevant
-- Use a clear multi-column or layered layout so nodes don't overlap
-- Every node should have at least one incoming or outgoing edge
+CRITICAL DIAGRAM GUIDELINES:
+1. Layout: Use a clear LEFT-TO-RIGHT or TOP-TO-BOTTOM layered flow. Entry points on the left/top, outputs on the right/bottom.
+2. Branching: Include at least 2 decision/branching points (e.g. "Valid?", "Safe?") with separate paths for success and failure/error.
+3. Feedback loops: Include at least 1 feedback or retry loop (e.g. "retry with backoff", "re-validate").
+4. Parallel paths: Where appropriate, show parallel processing branches that merge back.
+5. No overlap: Ensure adequate spacing — nodes in the same column should be at least 140px apart vertically.
+6. Descriptive edges: Every edge label should describe WHAT flows along that connection (data, action, or condition), not just "next".
+7. Completeness: The diagram should tell the full story of the system — someone should be able to understand the architecture just from the diagram.
 """
 
 
@@ -201,12 +217,14 @@ def _fallback_payload(topic: str) -> dict:
         ],
         "conclusion": f"Understanding {topic} is essential for building robust systems. The key takeaway is to start small, iterate, and measure your progress.",
         "diagram_nodes": [
-            {"id": "node_1", "label": "Start", "x": 250, "y": 50, "node_type": "input"},
-            {"id": "node_2", "label": "Process", "x": 250, "y": 200, "node_type": "default"},
-            {"id": "node_3", "label": "Output", "x": 250, "y": 350, "node_type": "output"},
+            {"id": "node_1", "label": "Start", "description": "Entry point for the system", "x": 50, "y": 50, "node_type": "input"},
+            {"id": "node_2", "label": "Validate Input", "description": "Checks and sanitizes incoming data", "x": 300, "y": 50, "node_type": "default"},
+            {"id": "node_3", "label": "Process", "description": "Core processing logic", "x": 550, "y": 50, "node_type": "default"},
+            {"id": "node_4", "label": "Output", "description": "Returns the final result", "x": 800, "y": 50, "node_type": "output"},
         ],
         "diagram_edges": [
-            {"id": "edge_1_2", "source": "node_1", "target": "node_2", "label": "Input", "animated": True},
-            {"id": "edge_2_3", "source": "node_2", "target": "node_3", "label": "Result", "animated": True},
+            {"id": "edge_1_2", "source": "node_1", "target": "node_2", "label": "raw input", "animated": True, "edge_type": "smoothstep"},
+            {"id": "edge_2_3", "source": "node_2", "target": "node_3", "label": "validated data", "animated": True, "edge_type": "smoothstep"},
+            {"id": "edge_3_4", "source": "node_3", "target": "node_4", "label": "result", "animated": True, "edge_type": "smoothstep"},
         ],
     }

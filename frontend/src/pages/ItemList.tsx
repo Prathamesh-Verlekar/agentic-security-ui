@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { fetchItems } from "../api/client";
 import ErrorBanner from "../components/ErrorBanner";
 import ItemCard from "../components/ItemCard";
@@ -12,7 +12,10 @@ const TITLES: Record<Category, string> = {
 };
 
 export default function ItemList() {
-  const { category } = useParams<{ category: Category }>();
+  const { pathname } = useLocation();
+  // Derive category from the path: "/guardrails" -> "guardrails", "/evals" -> "evals"
+  const category = pathname.split("/")[1] as Category;
+
   const [items, setItems] = useState<ItemSummary[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<ErrorDetail | null>(null);
@@ -22,7 +25,7 @@ export default function ItemList() {
     setLoading(true);
     setError(null);
 
-    fetchItems(category as Category)
+    fetchItems(category)
       .then((res) => {
         if (res.success && res.data) {
           setItems(res.data);
@@ -39,7 +42,7 @@ export default function ItemList() {
 
   return (
     <div className="item-list-page">
-      <h1 className="page-title">{TITLES[(category as Category) ?? "guardrails"]}</h1>
+      <h1 className="page-title">{TITLES[category] ?? category}</h1>
       <p className="page-subtitle">
         Click any card to see a detailed, AI-generated deep dive.
       </p>

@@ -16,6 +16,10 @@ OPENAI_API_KEY: str = os.getenv("OPENAI_API_KEY", "YOUR_API_KEY_HERE")
 OPENAI_MODEL_NAME: str = os.getenv("OPENAI_MODEL_NAME", "gpt-4o-mini")
 OPENAI_ARTICLE_MODEL: str = os.getenv("OPENAI_ARTICLE_MODEL", "gpt-4.1-mini")
 
+# DALL-E image generation
+OPENAI_IMAGE_MODEL: str = os.getenv("OPENAI_IMAGE_MODEL", "dall-e-3")
+OPENAI_IMAGE_SIZE: str = os.getenv("OPENAI_IMAGE_SIZE", "1024x1024")
+
 # Admin
 ADMIN_PASSWORD: str = os.getenv("ADMIN_PASSWORD", "changeme")
 ADMIN_TOKEN_SECRET: str = os.getenv("ADMIN_TOKEN_SECRET", "agentic-security-secret-key-2024")

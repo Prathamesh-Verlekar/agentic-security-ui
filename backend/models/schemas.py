@@ -73,9 +73,10 @@ class ArticleSection(BaseModel):
 class DiagramNode(BaseModel):
     id: str
     label: str
+    description: str = Field(default="", description="1-sentence description shown below the label")
     x: float = Field(..., description="X position for React Flow")
     y: float = Field(..., description="Y position for React Flow")
-    node_type: str = Field(default="default", description="React Flow node type")
+    node_type: str = Field(default="default", description="input | output | default | decision")
 
 
 class DiagramEdge(BaseModel):
@@ -84,6 +85,7 @@ class DiagramEdge(BaseModel):
     target: str
     label: str = ""
     animated: bool = True
+    edge_type: str = Field(default="smoothstep", description="smoothstep | bezier | straight")
 
 
 class ArticleSummary(BaseModel):
@@ -121,6 +123,66 @@ class AdminLoginResponse(BaseModel):
 
 class ArticleGenerateRequest(BaseModel):
     topic: str = Field(..., min_length=3, description="Topic for the Medium article")
+
+
+# ---------------------------------------------------------------------------
+# Career Counselor schemas
+# ---------------------------------------------------------------------------
+
+class Profession(BaseModel):
+    id: str = Field(..., description="Slug-style identifier, e.g. 'software-engineer'")
+    title: str
+    short_description: str
+    icon_emoji: str = ""
+    tags: list[str] = []
+
+
+class CareerPathStage(BaseModel):
+    stage: str = Field(..., description="Stage name, e.g. 'Junior Developer'")
+    years: str = Field(..., description="Typical years range, e.g. '0-2 years'")
+    description: str = Field(..., description="What this stage involves")
+
+
+class CareerDetail(BaseModel):
+    id: str
+    title: str
+    overview: str
+    salary_range: str = Field(..., description="e.g. '$60,000 – $180,000'")
+    key_skills: list[str] = Field(..., min_length=5, max_length=10, description="8-10 key skills")
+    education_requirements: str
+    career_path: list[CareerPathStage] = Field(..., description="4-6 career stages")
+    day_in_the_life: str = Field(..., description="Narrative paragraph about a typical day")
+    pros: list[str] = Field(..., min_length=3, max_length=7, description="5-7 advantages")
+    cons: list[str] = Field(..., min_length=3, max_length=6, description="4-6 disadvantages")
+    future_outlook: str
+    image_url: str = Field(default="", description="URL to the DALL-E generated image")
+
+
+class CareerTransitionEdge(BaseModel):
+    id: str
+    source: str = Field(..., description="Source profession id")
+    target: str = Field(..., description="Target profession id")
+    label: str = Field(..., description="Transition description, e.g. 'Analytics skills'")
+    stage: str = Field(default="Mid-Career", description="At what stage this transition is common")
+    difficulty: str = Field(default="moderate", description="easy | moderate | hard")
+
+
+class CareerTransitionGraph(BaseModel):
+    nodes: list[Profession]
+    edges: list[CareerTransitionEdge]
+
+
+class ChatMessage(BaseModel):
+    role: str = Field(..., description="'user' or 'assistant'")
+    content: str
+
+
+class CareerChatRequest(BaseModel):
+    messages: list[ChatMessage] = Field(..., min_length=1, description="Conversation history")
+
+
+class CareerChatResponse(BaseModel):
+    reply: str
 
 
 # ---------------------------------------------------------------------------

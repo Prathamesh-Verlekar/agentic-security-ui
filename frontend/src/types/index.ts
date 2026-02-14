@@ -38,6 +38,7 @@ export interface ArticleSection {
 export interface DiagramNode {
   id: string;
   label: string;
+  description: string;
   x: number;
   y: number;
   node_type: string;
@@ -49,6 +50,7 @@ export interface DiagramEdge {
   target: string;
   label: string;
   animated: boolean;
+  edge_type: string;
 }
 
 export interface ArticleSummary {
@@ -69,6 +71,62 @@ export interface Article {
   conclusion: string;
   created_at: string;
 }
+
+/* ─── Career Counselor types ─── */
+
+export interface Profession {
+  id: string;
+  title: string;
+  short_description: string;
+  icon_emoji: string;
+  tags: string[];
+}
+
+export interface CareerPathStage {
+  stage: string;
+  years: string;
+  description: string;
+}
+
+export interface CareerDetail {
+  id: string;
+  title: string;
+  overview: string;
+  salary_range: string;
+  key_skills: string[];
+  education_requirements: string;
+  career_path: CareerPathStage[];
+  day_in_the_life: string;
+  pros: string[];
+  cons: string[];
+  future_outlook: string;
+  image_url: string;
+}
+
+export interface CareerTransitionEdge {
+  id: string;
+  source: string;
+  target: string;
+  label: string;
+  stage: string;
+  difficulty: "easy" | "moderate" | "hard";
+}
+
+export interface CareerTransitionGraph {
+  nodes: Profession[];
+  edges: CareerTransitionEdge[];
+}
+
+export interface ChatMessage {
+  role: "user" | "assistant";
+  content: string;
+}
+
+export interface CareerChatResponse {
+  reply: string;
+}
+
+/* ─── Common ─── */
 
 export interface ErrorDetail {
   message: string;

@@ -76,11 +76,29 @@ export default function ArticleView() {
 
       {article.diagram_nodes.length > 0 && (
         <section className="article-diagram-section">
-          <h2 className="article-section-heading">Architecture / Workflow</h2>
+          <h2 className="diagram-section-title">Architecture / Workflow</h2>
+          <p className="diagram-section-subtitle">
+            Interactive diagram — drag to pan, scroll to zoom, and click nodes to
+            inspect the flow.
+          </p>
           <FlowDiagram
             nodes={article.diagram_nodes}
             edges={article.diagram_edges}
           />
+          <div className="diagram-legend">
+            <span className="legend-item">
+              <span className="legend-dot input" /> Entry Point
+            </span>
+            <span className="legend-item">
+              <span className="legend-dot default" /> Process Step
+            </span>
+            <span className="legend-item">
+              <span className="legend-dot decision" /> Decision
+            </span>
+            <span className="legend-item">
+              <span className="legend-dot output" /> Output
+            </span>
+          </div>
         </section>
       )}
 

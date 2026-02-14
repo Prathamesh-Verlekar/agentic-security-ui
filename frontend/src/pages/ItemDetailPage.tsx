@@ -1,12 +1,16 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import { fetchItemDetail } from "../api/client";
 import ErrorBanner from "../components/ErrorBanner";
 import Loader from "../components/Loader";
 import type { Category, ErrorDetail, ItemDetail } from "../types";
 
 export default function ItemDetailPage() {
-  const { category, id } = useParams<{ category: string; id: string }>();
+  const { id } = useParams<{ id: string }>();
+  const { pathname } = useLocation();
+  // Derive category from path: "/guardrails/some-id" -> "guardrails"
+  const category = pathname.split("/")[1] as Category;
+
   const [detail, setDetail] = useState<ItemDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<ErrorDetail | null>(null);
@@ -16,7 +20,7 @@ export default function ItemDetailPage() {
     setLoading(true);
     setError(null);
 
-    fetchItemDetail(id, category as Category)
+    fetchItemDetail(id, category)
       .then((res) => {
         if (res.success && res.data) {
           setDetail(res.data);

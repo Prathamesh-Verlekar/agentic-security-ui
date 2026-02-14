@@ -9,7 +9,7 @@ export default function Navbar() {
   return (
     <nav className="navbar">
       <Link to="/" className="navbar-brand">
-        <span className="brand-icon">&#x1F6E1;</span> Agentic Security
+        <span className="brand-icon">&#x2728;</span> AI Tools
       </Link>
       <div className="nav-links">
         <Link to="/guardrails" className={linkClass("/guardrails")}>
@@ -17,6 +17,9 @@ export default function Navbar() {
         </Link>
         <Link to="/evals" className={linkClass("/evals")}>
           Evals
+        </Link>
+        <Link to="/careers" className={linkClass("/careers")}>
+          Careers
         </Link>
       </div>
     </nav>

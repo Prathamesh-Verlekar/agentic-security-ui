@@ -4,9 +4,14 @@ import type {
   ApiResponse,
   Article,
   ArticleSummary,
+  CareerChatResponse,
+  CareerDetail,
+  CareerTransitionGraph,
   Category,
+  ChatMessage,
   ItemDetail,
   ItemSummary,
+  Profession,
 } from "../types";
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8000";
@@ -62,6 +67,37 @@ export async function fetchItemDetail(
   return apiFetch<ItemDetail>(
     `/api/v1/items/${itemId}?category=${category}`
   );
+}
+
+// ─── Career endpoints ─────────────────────────────────────────────────────────
+
+export async function fetchCareers(): Promise<ApiResponse<Profession[]>> {
+  return apiFetch<Profession[]>("/api/v1/careers");
+}
+
+export async function fetchCareerDetail(
+  professionId: string
+): Promise<ApiResponse<CareerDetail>> {
+  return apiFetch<CareerDetail>(`/api/v1/careers/${professionId}`);
+}
+
+export function getCareerImageUrl(professionId: string): string {
+  return `${BASE_URL}/api/v1/careers/${professionId}/image`;
+}
+
+export async function fetchCareerTransitions(): Promise<ApiResponse<CareerTransitionGraph>> {
+  return apiFetch<CareerTransitionGraph>("/api/v1/careers/transitions");
+}
+
+export async function chatWithCareer(
+  professionId: string,
+  messages: ChatMessage[]
+): Promise<ApiResponse<CareerChatResponse>> {
+  return apiFetch<CareerChatResponse>(`/api/v1/careers/${professionId}/chat`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ messages }),
+  });
 }
 
 // ─── Admin endpoints ─────────────────────────────────────────────────────────

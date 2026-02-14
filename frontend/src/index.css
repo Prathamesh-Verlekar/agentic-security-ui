@@ -20,6 +20,8 @@
   --color-guardrail-bg: rgba(59, 130, 246, 0.08);
   --color-eval: #8b5cf6;
   --color-eval-bg: rgba(139, 92, 246, 0.08);
+  --color-career: #10b981;
+  --color-career-bg: rgba(16, 185, 129, 0.08);
   --color-danger: #ef4444;
   --color-tag-bg: rgba(99, 102, 241, 0.12);
   --color-tag-text: #a5b4fc;
@@ -169,6 +171,11 @@ a {
 .evals-card:hover {
   border-color: var(--color-eval);
   background: var(--color-eval-bg);
+}
+
+.careers-card:hover {
+  border-color: var(--color-career);
+  background: var(--color-career-bg);
 }
 
 .landing-card-icon {
@@ -688,13 +695,27 @@ a {
   margin-bottom: 2.5rem;
 }
 
+.diagram-section-title {
+  font-size: 1.35rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: var(--color-text);
+}
+
+.diagram-section-subtitle {
+  font-size: 0.88rem;
+  color: var(--color-text-muted);
+  margin-bottom: 1rem;
+}
+
 .flow-diagram-container {
   width: 100%;
-  height: 450px;
+  height: 560px;
   border-radius: var(--radius);
   border: 1px solid var(--color-border);
   background: var(--color-bg);
   overflow: hidden;
+  box-shadow: 0 0 40px rgba(99, 102, 241, 0.06), 0 2px 12px rgba(0, 0, 0, 0.3);
 }
 
 .flow-diagram-container .react-flow__node {
@@ -705,14 +726,883 @@ a {
   stroke-width: 2;
 }
 
+.flow-diagram-container .react-flow__edge-textbg {
+  rx: 4;
+  ry: 4;
+}
+
+.flow-diagram-container .react-flow__controls {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
 .flow-diagram-container .react-flow__controls button {
   background: var(--color-surface);
   color: var(--color-text);
   border-color: var(--color-border);
+  width: 28px;
+  height: 28px;
 }
 
 .flow-diagram-container .react-flow__controls button:hover {
   background: var(--color-surface-hover);
+}
+
+.flow-diagram-container .react-flow__controls button svg {
+  fill: var(--color-text-muted);
+}
+
+/* Diagram legend below the flow */
+.diagram-legend {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  margin-top: 0.75rem;
+  padding: 0.6rem 0;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+}
+
+.legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.legend-dot.input { background: #3b82f6; }
+.legend-dot.output { background: #8b5cf6; }
+.legend-dot.decision { background: #ef4444; }
+.legend-dot.default { background: #334155; }
+
+/* ─── Career Landing ─────────────────────────────── */
+.career-landing {
+  padding-top: 1rem;
+}
+
+.career-hero {
+  text-align: center;
+  max-width: 640px;
+  margin: 0 auto 2.5rem;
+}
+
+.career-hero-title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, var(--color-career), #3b82f6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 0.75rem;
+}
+
+.career-hero-subtitle {
+  font-size: 1.05rem;
+  color: var(--color-text-muted);
+  line-height: 1.7;
+}
+
+.career-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.25rem;
+}
+
+/* ─── Career Card ────────────────────────────────── */
+.career-card {
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--radius);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  overflow: hidden;
+  transition: all var(--transition);
+}
+
+.career-card:hover {
+  border-color: var(--color-career);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 32px rgba(16, 185, 129, 0.12), var(--shadow);
+}
+
+.career-card-image-wrapper {
+  position: relative;
+  width: 100%;
+  height: 180px;
+  overflow: hidden;
+  background: var(--color-bg);
+}
+
+.career-card-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.career-card:hover .career-card-image {
+  transform: scale(1.05);
+}
+
+.career-card-image-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    transparent 40%,
+    rgba(11, 15, 25, 0.8) 100%
+  );
+}
+
+.career-card-body {
+  padding: 1.25rem 1.5rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.career-card-emoji {
+  font-size: 1.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.career-card-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+}
+
+.career-card-desc {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  line-height: 1.6;
+  flex: 1;
+}
+
+.career-card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.75rem;
+}
+
+.career-card-cta {
+  margin-top: 0.75rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-career);
+}
+
+/* ─── Career Detail Page ─────────────────────────── */
+.career-detail {
+  max-width: 860px;
+  padding-top: 1rem;
+}
+
+.career-detail-hero {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+  margin-bottom: 2.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.career-detail-hero-image {
+  width: 200px;
+  height: 200px;
+  border-radius: var(--radius);
+  object-fit: cover;
+  border: 1px solid var(--color-border);
+  flex-shrink: 0;
+}
+
+.career-detail-hero-text {
+  flex: 1;
+}
+
+.career-detail-title {
+  font-size: 2.25rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.5rem;
+}
+
+.career-detail-salary {
+  font-size: 1.15rem;
+  color: var(--color-career);
+  font-weight: 600;
+}
+
+.career-section {
+  margin-bottom: 2.25rem;
+}
+
+.career-section-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--color-primary-light);
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.career-section-body {
+  font-size: 0.95rem;
+  color: var(--color-text-muted);
+  line-height: 1.8;
+}
+
+/* ─── Skills Chips ───────────────────────────────── */
+.career-skills-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.career-skill-chip {
+  padding: 0.35rem 0.85rem;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  background: rgba(16, 185, 129, 0.1);
+  color: #6ee7b7;
+  border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+/* ─── Career Timeline ────────────────────────────── */
+.career-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.career-timeline-item {
+  display: flex;
+  gap: 1rem;
+}
+
+.career-timeline-marker {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+  width: 20px;
+}
+
+.career-timeline-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  border: 2px solid var(--color-primary-light);
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+
+.career-timeline-line {
+  width: 2px;
+  flex: 1;
+  background: var(--color-border);
+  margin-top: 4px;
+}
+
+.career-timeline-content {
+  padding-bottom: 1.5rem;
+}
+
+.career-timeline-stage {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: 0.15rem;
+}
+
+.career-timeline-years {
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--color-primary-light);
+  background: rgba(99, 102, 241, 0.1);
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  display: inline-block;
+  margin-bottom: 0.4rem;
+}
+
+.career-timeline-desc {
+  font-size: 0.88rem;
+  color: var(--color-text-muted);
+  line-height: 1.6;
+}
+
+/* ─── Day in the Life ────────────────────────────── */
+.career-day-narrative {
+  font-size: 0.95rem;
+  color: var(--color-text-muted);
+  line-height: 1.8;
+}
+
+.career-day-narrative p {
+  margin-bottom: 1rem;
+}
+
+/* ─── Pros & Cons ────────────────────────────────── */
+.career-proscons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+
+.career-proscons-column {
+  padding: 1.25rem 1.5rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+}
+
+.career-proscons-column.pros {
+  border-color: rgba(16, 185, 129, 0.25);
+}
+
+.career-proscons-column.cons {
+  border-color: rgba(239, 68, 68, 0.25);
+}
+
+.career-proscons-heading {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.proscons-icon {
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.career-proscons-column.pros .proscons-icon {
+  color: #10b981;
+}
+
+.career-proscons-column.cons .proscons-icon {
+  color: #ef4444;
+}
+
+.career-proscons-list {
+  padding-left: 1.15rem;
+  font-size: 0.88rem;
+  color: var(--color-text-muted);
+  line-height: 1.75;
+}
+
+.career-proscons-list li {
+  margin-bottom: 0.25rem;
+}
+
+/* ─── Career Chat ────────────────────────────────── */
+.career-chat {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  overflow: hidden;
+}
+
+.career-chat-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-bg);
+}
+
+.career-chat-icon {
+  font-size: 1.5rem;
+}
+
+.career-chat-title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.1rem;
+}
+
+.career-chat-subtitle {
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+}
+
+.career-chat-messages {
+  height: 380px;
+  overflow-y: auto;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.career-chat-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  text-align: center;
+  gap: 1rem;
+}
+
+.career-chat-empty p {
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+}
+
+.career-chat-suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+  max-width: 480px;
+}
+
+.career-chat-suggestion {
+  padding: 0.4rem 0.85rem;
+  border-radius: 999px;
+  border: 1px solid var(--color-border);
+  background: var(--color-bg);
+  color: var(--color-text-muted);
+  font-size: 0.78rem;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all var(--transition);
+  text-align: left;
+}
+
+.career-chat-suggestion:hover {
+  border-color: var(--color-career);
+  color: var(--color-text);
+  background: var(--color-surface-hover);
+}
+
+/* Chat bubbles */
+.career-chat-bubble {
+  max-width: 85%;
+  padding: 0.85rem 1.1rem;
+  border-radius: var(--radius);
+  font-size: 0.9rem;
+  line-height: 1.65;
+}
+
+.career-chat-bubble.user {
+  align-self: flex-end;
+  background: var(--color-primary);
+  color: #fff;
+  border-bottom-right-radius: 4px;
+}
+
+.career-chat-bubble.assistant {
+  align-self: flex-start;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  border-bottom-left-radius: 4px;
+}
+
+.career-chat-bubble-role {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.3rem;
+  opacity: 0.7;
+}
+
+.career-chat-bubble.user .career-chat-bubble-role {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.career-chat-bubble-content {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* Typing indicator */
+.career-chat-typing {
+  display: flex;
+  gap: 4px;
+  padding: 4px 0;
+}
+
+.career-chat-typing span {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--color-text-muted);
+  animation: chatBounce 1.2s infinite;
+}
+
+.career-chat-typing span:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.career-chat-typing span:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+@keyframes chatBounce {
+  0%, 60%, 100% {
+    transform: translateY(0);
+    opacity: 0.4;
+  }
+  30% {
+    transform: translateY(-6px);
+    opacity: 1;
+  }
+}
+
+/* Chat input area */
+.career-chat-input-area {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.85rem 1.25rem;
+  border-top: 1px solid var(--color-border);
+  background: var(--color-bg);
+}
+
+.career-chat-input {
+  flex: 1;
+  padding: 0.6rem 1rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-size: 0.88rem;
+  font-family: inherit;
+  outline: none;
+  transition: border-color var(--transition);
+}
+
+.career-chat-input:focus {
+  border-color: var(--color-primary);
+}
+
+.career-chat-input::placeholder {
+  color: var(--color-text-muted);
+  opacity: 0.5;
+}
+
+.career-chat-send {
+  padding: 0.6rem 1.25rem;
+  border-radius: var(--radius-sm);
+  border: none;
+  background: var(--color-career);
+  color: #fff;
+  font-size: 0.88rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.career-chat-send:hover:not(:disabled) {
+  background: #059669;
+}
+
+.career-chat-send:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ─── Career Transition Cards (detail page) ──────── */
+.career-transitions-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.career-transition-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 1rem 1.15rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  transition: all var(--transition);
+}
+
+.career-transition-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+}
+
+.career-transition-card.difficulty-easy:hover {
+  border-color: #22c55e;
+}
+.career-transition-card.difficulty-moderate:hover {
+  border-color: #f59e0b;
+}
+.career-transition-card.difficulty-hard:hover {
+  border-color: #ef4444;
+}
+
+.career-transition-card-top {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.career-transition-emoji {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.career-transition-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.career-transition-name {
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.career-transition-label {
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+}
+
+.career-transition-card-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.career-transition-stage {
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: var(--color-primary-light);
+  background: rgba(99, 102, 241, 0.1);
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+}
+
+.career-transition-difficulty {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+}
+
+.career-transition-difficulty.easy {
+  color: #22c55e;
+  background: rgba(34, 197, 94, 0.1);
+}
+
+.career-transition-difficulty.moderate {
+  color: #f59e0b;
+  background: rgba(245, 158, 11, 0.1);
+}
+
+.career-transition-difficulty.hard {
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.transition-map-link {
+  display: inline-block;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--color-career);
+  margin-top: 0.5rem;
+  transition: color var(--transition);
+}
+
+.transition-map-link:hover {
+  color: #059669;
+}
+
+/* ─── Career Transition Map Banner ────────────────── */
+.transition-map-banner {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 1.25rem 1.75rem;
+  margin-bottom: 2rem;
+  border-radius: var(--radius);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.06), rgba(59, 130, 246, 0.06));
+  transition: all var(--transition);
+  cursor: pointer;
+}
+
+.transition-map-banner:hover {
+  border-color: var(--color-career);
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(59, 130, 246, 0.1));
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+}
+
+.transition-map-banner-icon {
+  font-size: 2rem;
+  flex-shrink: 0;
+}
+
+.transition-map-banner-text {
+  flex: 1;
+}
+
+.transition-map-banner-text h3 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin-bottom: 0.2rem;
+}
+
+.transition-map-banner-text p {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  line-height: 1.5;
+}
+
+.transition-map-banner-cta {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--color-career);
+  white-space: nowrap;
+}
+
+/* ─── Career Transition Page ─────────────────────── */
+.transitions-page {
+  padding-top: 1rem;
+}
+
+.transitions-hero {
+  text-align: center;
+  max-width: 640px;
+  margin: 0 auto 2rem;
+}
+
+.transitions-title {
+  font-size: 2.25rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, #10b981, #3b82f6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 0.75rem;
+}
+
+.transitions-subtitle {
+  font-size: 1rem;
+  color: var(--color-text-muted);
+  line-height: 1.7;
+}
+
+/* ─── Transition Graph ───────────────────────────── */
+.transition-graph-wrapper {
+  margin-bottom: 2rem;
+}
+
+.transition-graph-container {
+  width: 100%;
+  height: 620px;
+  border-radius: var(--radius);
+  border: 1px solid var(--color-border);
+  background: var(--color-bg);
+  overflow: hidden;
+  box-shadow: 0 0 40px rgba(16, 185, 129, 0.06), 0 2px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Profession nodes inside the graph */
+.transition-node {
+  background: #111827;
+  border-radius: 12px;
+  padding: 12px 16px;
+  min-width: 130px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.transition-node:hover {
+  border-color: #10b981 !important;
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.3), 0 4px 12px rgba(0, 0, 0, 0.4) !important;
+}
+
+.transition-node.highlighted {
+  background: #0c2d3d;
+}
+
+.transition-node-emoji {
+  font-size: 1.5rem;
+  margin-bottom: 4px;
+}
+
+.transition-node-label {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #e2e8f0;
+  line-height: 1.3;
+}
+
+/* Legend & hint */
+.transition-legend {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  margin-top: 0.75rem;
+  padding: 0.6rem 0;
+}
+
+.transition-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+}
+
+.transition-legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.transition-hint {
+  text-align: center;
+  font-size: 0.82rem;
+  color: var(--color-text-muted);
+  opacity: 0.7;
+  margin-top: 0.25rem;
+}
+
+/* React Flow overrides for transition graph */
+.transition-graph-container .react-flow__controls button {
+  background: var(--color-surface);
+  color: var(--color-text);
+  border-color: var(--color-border);
+  width: 28px;
+  height: 28px;
+}
+
+.transition-graph-container .react-flow__controls button:hover {
+  background: var(--color-surface-hover);
+}
+
+.transition-graph-container .react-flow__controls button svg {
+  fill: var(--color-text-muted);
 }
 
 /* ─── Responsive ─────────────────────────────────── */
@@ -746,6 +1636,61 @@ a {
   }
 
   .flow-diagram-container {
-    height: 320px;
+    height: 400px;
+  }
+
+  .diagram-legend {
+    gap: 0.75rem;
+  }
+
+  .career-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .career-hero-title {
+    font-size: 1.8rem;
+  }
+
+  .career-detail-hero {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .career-detail-hero-image {
+    width: 150px;
+    height: 150px;
+  }
+
+  .career-detail-title {
+    font-size: 1.6rem;
+  }
+
+  .career-proscons {
+    grid-template-columns: 1fr;
+  }
+
+  .career-chat-messages {
+    height: 300px;
+  }
+
+  .career-chat-suggestion {
+    font-size: 0.72rem;
+  }
+
+  .transition-graph-container {
+    height: 450px;
+  }
+
+  .transition-map-banner {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .transition-map-banner-cta {
+    margin-top: 0.5rem;
+  }
+
+  .transitions-title {
+    font-size: 1.8rem;
   }
 }
