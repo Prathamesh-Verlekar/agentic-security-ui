@@ -15,6 +15,10 @@ load_dotenv(dotenv_path=_env_path)
 OPENAI_API_KEY: str = os.getenv("OPENAI_API_KEY", "YOUR_API_KEY_HERE")
 OPENAI_MODEL_NAME: str = os.getenv("OPENAI_MODEL_NAME", "gpt-4o-mini")
 
+# Admin
+ADMIN_PASSWORD: str = os.getenv("ADMIN_PASSWORD", "changeme")
+ADMIN_TOKEN_SECRET: str = os.getenv("ADMIN_TOKEN_SECRET", "agentic-security-secret-key-2024")
+
 # Server
 HOST: str = os.getenv("HOST", "0.0.0.0")
 PORT: int = int(os.getenv("PORT", "8000"))

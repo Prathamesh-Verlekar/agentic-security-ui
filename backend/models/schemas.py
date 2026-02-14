@@ -62,6 +62,68 @@ class ItemDetail(BaseModel):
 
 
 # ---------------------------------------------------------------------------
+# Article schemas (admin article generator)
+# ---------------------------------------------------------------------------
+
+class ArticleSection(BaseModel):
+    heading: str
+    body: str = Field(..., description="Markdown body text for this section")
+
+
+class DiagramNode(BaseModel):
+    id: str
+    label: str
+    x: float = Field(..., description="X position for React Flow")
+    y: float = Field(..., description="Y position for React Flow")
+    node_type: str = Field(default="default", description="React Flow node type")
+
+
+class DiagramEdge(BaseModel):
+    id: str
+    source: str
+    target: str
+    label: str = ""
+    animated: bool = True
+
+
+class ArticleSummary(BaseModel):
+    id: str
+    topic: str
+    title: str
+    created_at: str
+
+
+class Article(BaseModel):
+    id: str
+    topic: str
+    title: str
+    subtitle: str
+    sections: list[ArticleSection] = Field(
+        ..., description="4-6 article sections"
+    )
+    diagram_nodes: list[DiagramNode] = Field(
+        default=[], description="React Flow nodes for the architecture diagram"
+    )
+    diagram_edges: list[DiagramEdge] = Field(
+        default=[], description="React Flow edges for the architecture diagram"
+    )
+    conclusion: str
+    created_at: str
+
+
+class AdminLoginRequest(BaseModel):
+    password: str
+
+
+class AdminLoginResponse(BaseModel):
+    token: str
+
+
+class ArticleGenerateRequest(BaseModel):
+    topic: str = Field(..., min_length=3, description="Topic for the Medium article")
+
+
+# ---------------------------------------------------------------------------
 # Standard API response wrapper
 # ---------------------------------------------------------------------------
 

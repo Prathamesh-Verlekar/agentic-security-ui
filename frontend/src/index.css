@@ -423,6 +423,267 @@ a {
   white-space: pre-wrap;
 }
 
+/* ─── Admin Login ────────────────────────────────── */
+.admin-login {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+}
+
+.admin-login-form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 380px;
+  padding: 2.5rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+}
+
+.admin-login-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 0.35rem;
+}
+
+.admin-login-subtitle {
+  font-size: 0.88rem;
+  color: var(--color-text-muted);
+  margin-bottom: 1.5rem;
+}
+
+.admin-input {
+  width: 100%;
+  padding: 0.7rem 1rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-size: 0.9rem;
+  font-family: inherit;
+  outline: none;
+  transition: border-color var(--transition);
+}
+
+.admin-input:focus {
+  border-color: var(--color-primary);
+}
+
+.admin-input::placeholder {
+  color: var(--color-text-muted);
+  opacity: 0.6;
+}
+
+.admin-error {
+  color: #fca5a5;
+  font-size: 0.83rem;
+  margin-top: 0.5rem;
+}
+
+.admin-btn {
+  margin-top: 1rem;
+  padding: 0.65rem 1.25rem;
+  border-radius: var(--radius-sm);
+  border: none;
+  background: var(--color-primary);
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.admin-btn:hover:not(:disabled) {
+  background: var(--color-primary-light);
+}
+
+.admin-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ─── Admin Dashboard ────────────────────────────── */
+.admin-dashboard {
+  padding-top: 1rem;
+}
+
+.article-form {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+}
+
+.article-topic-input {
+  flex: 1;
+}
+
+.admin-section-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--color-text-muted);
+  margin-bottom: 1rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.admin-empty {
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+}
+
+.articles-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.article-list-card {
+  display: block;
+  padding: 1rem 1.25rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  transition: all var(--transition);
+}
+
+.article-list-card:hover {
+  border-color: var(--color-primary);
+  background: var(--color-surface-hover);
+}
+
+.article-list-title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.article-list-meta {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+}
+
+/* ─── Article View ───────────────────────────────── */
+.article-view {
+  max-width: 780px;
+  padding-top: 1rem;
+}
+
+.article-header {
+  margin-bottom: 2.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.article-title {
+  font-size: 2.25rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+  margin-bottom: 0.75rem;
+}
+
+.article-subtitle {
+  font-size: 1.15rem;
+  color: var(--color-text-muted);
+  line-height: 1.6;
+  margin-bottom: 0.5rem;
+}
+
+.article-meta {
+  font-size: 0.82rem;
+  color: var(--color-text-muted);
+  opacity: 0.7;
+}
+
+.article-section {
+  margin-bottom: 2rem;
+}
+
+.article-section-heading {
+  font-size: 1.35rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+  color: var(--color-text);
+}
+
+.article-body {
+  font-size: 1.02rem;
+  line-height: 1.8;
+  color: var(--color-text-muted);
+}
+
+.article-body p {
+  margin-bottom: 1rem;
+}
+
+.article-body strong {
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+.article-body em {
+  font-style: italic;
+}
+
+.inline-code {
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+  background: rgba(99, 102, 241, 0.12);
+  color: var(--color-tag-text);
+  font-family: "SF Mono", "Fira Code", Consolas, monospace;
+  font-size: 0.88em;
+}
+
+.article-list {
+  padding-left: 1.25rem;
+  margin-bottom: 1rem;
+  line-height: 1.8;
+}
+
+.article-list li {
+  margin-bottom: 0.3rem;
+}
+
+.article-conclusion {
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--color-border);
+}
+
+/* ─── Flow Diagram ───────────────────────────────── */
+.article-diagram-section {
+  margin-bottom: 2.5rem;
+}
+
+.flow-diagram-container {
+  width: 100%;
+  height: 450px;
+  border-radius: var(--radius);
+  border: 1px solid var(--color-border);
+  background: var(--color-bg);
+  overflow: hidden;
+}
+
+.flow-diagram-container .react-flow__node {
+  font-family: "Inter", -apple-system, sans-serif;
+}
+
+.flow-diagram-container .react-flow__edge-path {
+  stroke-width: 2;
+}
+
+.flow-diagram-container .react-flow__controls button {
+  background: var(--color-surface);
+  color: var(--color-text);
+  border-color: var(--color-border);
+}
+
+.flow-diagram-container .react-flow__controls button:hover {
+  background: var(--color-surface-hover);
+}
+
 /* ─── Responsive ─────────────────────────────────── */
 @media (max-width: 640px) {
   .landing-cards {
@@ -443,5 +704,17 @@ a {
 
   .main-content {
     padding: 1.5rem 1rem 3rem;
+  }
+
+  .article-form {
+    flex-direction: column;
+  }
+
+  .article-title {
+    font-size: 1.6rem;
+  }
+
+  .flow-diagram-container {
+    height: 320px;
   }
 }

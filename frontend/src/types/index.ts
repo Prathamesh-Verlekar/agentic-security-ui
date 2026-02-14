@@ -28,6 +28,48 @@ export interface ItemDetail {
   metrics_or_checks: string[];
 }
 
+/* ─── Article types (admin) ─── */
+
+export interface ArticleSection {
+  heading: string;
+  body: string;
+}
+
+export interface DiagramNode {
+  id: string;
+  label: string;
+  x: number;
+  y: number;
+  node_type: string;
+}
+
+export interface DiagramEdge {
+  id: string;
+  source: string;
+  target: string;
+  label: string;
+  animated: boolean;
+}
+
+export interface ArticleSummary {
+  id: string;
+  topic: string;
+  title: string;
+  created_at: string;
+}
+
+export interface Article {
+  id: string;
+  topic: string;
+  title: string;
+  subtitle: string;
+  sections: ArticleSection[];
+  diagram_nodes: DiagramNode[];
+  diagram_edges: DiagramEdge[];
+  conclusion: string;
+  created_at: string;
+}
+
 export interface ErrorDetail {
   message: string;
   details?: unknown;
