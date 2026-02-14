@@ -10,6 +10,12 @@ export interface ItemSummary {
   tags: string[];
 }
 
+export interface Example {
+  title: string;
+  scenario: string;
+  code_snippet: string;
+}
+
 export interface ItemDetail {
   id: string;
   title: string;
@@ -17,7 +23,7 @@ export interface ItemDetail {
   overview: string;
   why_it_matters: string;
   implementation_steps: string[];
-  example_patterns: string[];
+  examples: Example[];
   risks_and_pitfalls: string[];
   metrics_or_checks: string[];
 }

@@ -333,6 +333,48 @@ a {
   color: var(--color-primary);
 }
 
+/* ─── Examples ────────────────────────────────────── */
+.examples-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.example-card {
+  padding: 1.25rem 1.5rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+}
+
+.example-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: 0.5rem;
+}
+
+.example-scenario {
+  font-size: 0.88rem;
+  color: var(--color-text-muted);
+  line-height: 1.7;
+  margin-bottom: 0.75rem;
+}
+
+.example-code {
+  padding: 0.85rem 1rem;
+  border-radius: var(--radius-sm);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  font-family: "SF Mono", "Fira Code", "Cascadia Code", Consolas, monospace;
+  font-size: 0.8rem;
+  line-height: 1.65;
+  color: var(--color-tag-text);
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
 /* ─── Loader ─────────────────────────────────────── */
 .loader-container {
   display: flex;

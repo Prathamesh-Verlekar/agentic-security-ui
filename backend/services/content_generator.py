@@ -8,7 +8,7 @@ import logging
 import time
 from pathlib import Path
 
-from backend.models.schemas import Category, ItemDetail, ItemSummary
+from backend.models.schemas import Category, Example, ItemDetail, ItemSummary
 from backend.services.openai_client import chat_completion
 
 logger = logging.getLogger(__name__)
@@ -65,7 +65,10 @@ Return ONLY a valid JSON object (no markdown fences) with these exact keys:
 - "overview": string (2-4 sentences)
 - "why_it_matters": string (2-4 sentences)
 - "implementation_steps": array of 5-8 actionable bullet strings
-- "example_patterns": array of 2-4 concrete pattern / pseudo-code strings
+- "examples": array of 2-4 objects, each with:
+    - "title": string (short label, e.g. "Blocking a prompt injection attack")
+    - "scenario": string (2-4 sentence real-world scenario describing when/how this applies)
+    - "code_snippet": string (Python or pseudocode snippet demonstrating the concept; use \\n for newlines)
 - "risks_and_pitfalls": array of 3-6 bullet strings
 - "metrics_or_checks": array of 3-6 bullet strings
 """
@@ -129,7 +132,7 @@ def _entry_to_detail(payload: dict, item: ItemSummary) -> ItemDetail:
         why_it_matters=payload.get("why_it_matters", ""),
         implementation_steps=payload.get("implementation_steps",
                                           ["Step 1", "Step 2", "Step 3", "Step 4", "Step 5"]),
-        example_patterns=payload.get("example_patterns", []),
+        examples=[Example(**ex) for ex in payload.get("examples", [])],
         risks_and_pitfalls=payload.get("risks_and_pitfalls",
                                         ["Risk 1", "Risk 2", "Risk 3"]),
         metrics_or_checks=payload.get("metrics_or_checks",
@@ -149,7 +152,7 @@ def _fallback_payload(item: ItemSummary) -> dict:
             "Add configuration and policy controls",
             "Write unit and integration tests",
         ],
-        "example_patterns": [],
+        "examples": [],
         "risks_and_pitfalls": [
             "Incomplete coverage may leave gaps",
             "Over-aggressive rules can block legitimate use",

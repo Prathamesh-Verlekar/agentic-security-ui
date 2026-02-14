@@ -59,13 +59,19 @@ export default function ItemDetailPage() {
         </ol>
       </Section>
 
-      {detail.example_patterns.length > 0 && (
-        <Section title="Example Patterns">
-          <ul className="detail-list">
-            {detail.example_patterns.map((p, i) => (
-              <li key={i}>{p}</li>
+      {detail.examples.length > 0 && (
+        <Section title="Examples">
+          <div className="examples-grid">
+            {detail.examples.map((ex, i) => (
+              <div key={i} className="example-card">
+                <h3 className="example-title">{ex.title}</h3>
+                <p className="example-scenario">{ex.scenario}</p>
+                {ex.code_snippet && (
+                  <pre className="example-code"><code>{ex.code_snippet}</code></pre>
+                )}
+              </div>
             ))}
-          </ul>
+          </div>
         </Section>
       )}
 

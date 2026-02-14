@@ -32,6 +32,12 @@ class ItemSummary(BaseModel):
     tags: list[str] = []
 
 
+class Example(BaseModel):
+    title: str = Field(..., description="Short label for the example")
+    scenario: str = Field(..., description="Real-world scenario description")
+    code_snippet: str = Field(default="", description="Python/pseudocode snippet (may be empty)")
+
+
 class ItemDetail(BaseModel):
     id: str
     title: str
@@ -42,8 +48,8 @@ class ItemDetail(BaseModel):
         ..., min_length=5, max_length=8,
         description="5-8 implementation bullets"
     )
-    example_patterns: list[str] = Field(
-        default=[], description="Concrete patterns / pseudo examples"
+    examples: list[Example] = Field(
+        default=[], description="2-4 examples with scenarios and code snippets"
     )
     risks_and_pitfalls: list[str] = Field(
         ..., min_length=3, max_length=6,
