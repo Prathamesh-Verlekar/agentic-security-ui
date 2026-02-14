@@ -37,9 +37,8 @@ export default function CareerTransitionsPage() {
       <div className="transitions-hero">
         <h1 className="transitions-title">Career Transition Map</h1>
         <p className="transitions-subtitle">
-          Explore how professionals switch between careers at different stages.
-          Click any profession to see where you can go — and how hard the
-          transition is.
+          Click any profession to drill down into its transition paths.
+          The side panel shows where you can go and where people come from.
         </p>
       </div>
 
