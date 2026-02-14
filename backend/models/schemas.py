@@ -148,12 +148,12 @@ class CareerDetail(BaseModel):
     title: str
     overview: str
     salary_range: str = Field(..., description="e.g. '$60,000 – $180,000'")
-    key_skills: list[str] = Field(..., min_length=5, max_length=10, description="8-10 key skills")
+    key_skills: list[str] = Field(default_factory=list, description="8-10 key skills")
     education_requirements: str
-    career_path: list[CareerPathStage] = Field(..., description="4-6 career stages")
+    career_path: list[CareerPathStage] = Field(default_factory=list, description="4-6 career stages")
     day_in_the_life: str = Field(..., description="Narrative paragraph about a typical day")
-    pros: list[str] = Field(..., min_length=3, max_length=7, description="5-7 advantages")
-    cons: list[str] = Field(..., min_length=3, max_length=6, description="4-6 disadvantages")
+    pros: list[str] = Field(default_factory=list, description="5-7 advantages")
+    cons: list[str] = Field(default_factory=list, description="4-6 disadvantages")
     future_outlook: str
     image_url: str = Field(default="", description="URL to the DALL-E generated image")
 
