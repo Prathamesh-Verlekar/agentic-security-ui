@@ -12,7 +12,9 @@ def get_openai_client() -> AsyncOpenAI:
     return AsyncOpenAI(api_key=OPENAI_API_KEY)
 
 
-async def chat_completion(prompt: str, system: str = "") -> str:
+async def chat_completion(
+    prompt: str, system: str = "", max_tokens: int = 2048
+) -> str:
     """
     Send a single chat-completion request and return the assistant message.
     """
@@ -26,6 +28,6 @@ async def chat_completion(prompt: str, system: str = "") -> str:
         model=OPENAI_MODEL_NAME,
         messages=messages,
         temperature=0.7,
-        max_tokens=2048,
+        max_tokens=max_tokens,
     )
     return response.choices[0].message.content or ""

@@ -8,6 +8,7 @@ import hmac
 import logging
 
 from fastapi import APIRouter, Depends, HTTPException, Header
+from fastapi.responses import JSONResponse
 
 from backend.config import ADMIN_PASSWORD, ADMIN_TOKEN_SECRET
 from backend.models.schemas import (
@@ -46,7 +47,7 @@ def _verify_token(token: str) -> bool:
     return hmac.compare_digest(token, expected)
 
 
-async def verify_admin(authorization: str = Header(...)) -> None:
+async def verify_admin(authorization: str = Header(default="")) -> None:
     """FastAPI dependency – extracts and verifies the Bearer token."""
     if not authorization.startswith("Bearer "):
         raise HTTPException(status_code=401, detail="Invalid authorization header")
@@ -57,12 +58,13 @@ async def verify_admin(authorization: str = Header(...)) -> None:
 
 # ─── Login ────────────────────────────────────────────────────────────────────
 
-@router.post("/login", response_model=ApiResponse[AdminLoginResponse])
+@router.post("/login")
 async def admin_login(body: AdminLoginRequest):
+    """Return a JSON response directly (not HTTPException) so CORS headers are preserved."""
     if body.password != ADMIN_PASSWORD:
-        raise HTTPException(
+        return JSONResponse(
             status_code=401,
-            detail=ApiResponse(
+            content=ApiResponse(
                 success=False,
                 error=ErrorDetail(message="Incorrect password"),
             ).model_dump(),

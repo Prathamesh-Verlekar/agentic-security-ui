@@ -16,15 +16,23 @@ async function apiFetch<T>(
   options?: RequestInit
 ): Promise<ApiResponse<T>> {
   const res = await fetch(`${BASE_URL}${path}`, options);
+  const body = await res.json().catch(() => null);
+
+  // If the response is already in our ApiResponse format, return it directly
+  if (body && typeof body.success === "boolean") {
+    return body as ApiResponse<T>;
+  }
+
+  // Otherwise, wrap the error
   if (!res.ok) {
-    const body = await res.json().catch(() => null);
     return {
       success: false,
       data: null,
       error: body?.error ?? body?.detail?.error ?? { message: `HTTP ${res.status}` },
     };
   }
-  return res.json() as Promise<ApiResponse<T>>;
+
+  return body as ApiResponse<T>;
 }
 
 function authHeaders(): Record<string, string> {

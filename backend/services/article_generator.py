@@ -25,39 +25,53 @@ CACHE_TTL_SECONDS = 10 * 24 * 60 * 60  # 10 days
 ARTICLES_FILE = Path(__file__).resolve().parent.parent / "cache" / "articles.json"
 
 SYSTEM_PROMPT = (
-    "You are an expert technical writer who creates engaging, in-depth Medium articles "
-    "about AI, LLM security, agentic frameworks, and software engineering. "
-    "You also design clear workflow/architecture diagrams. "
+    "You are a senior technical writer and architect who publishes in-depth, "
+    "publication-ready Medium articles about AI, LLM security, agentic frameworks, "
+    "and software engineering. Your articles are detailed, practical, and include "
+    "real-world examples, code snippets, and clear architecture diagrams. "
     "Return valid JSON only."
 )
 
 
 def _build_article_prompt(topic: str) -> str:
-    return f"""Write a comprehensive Medium-style technical article about: "{topic}"
+    return f"""Write a comprehensive, in-depth Medium-style technical article about: "{topic}"
+
+This article should be publication-ready, detailed enough for a senior engineer audience.
 
 Return ONLY a valid JSON object (no markdown fences) with these exact keys:
 
-- "title": string (catchy, Medium-style title)
-- "subtitle": string (1-sentence subtitle)
-- "sections": array of 4-6 objects, each with:
-    - "heading": string (section heading)
-    - "body": string (2-4 paragraphs of rich markdown content per section; use **bold**, *italic*, bullet lists, and inline `code` where appropriate)
-- "conclusion": string (2-3 paragraph conclusion with key takeaways)
-- "diagram_nodes": array of 5-8 objects representing workflow/architecture steps, each with:
+- "title": string (catchy, engaging Medium-style title)
+- "subtitle": string (compelling 1-2 sentence subtitle that hooks the reader)
+- "sections": array of 6-8 objects, each with:
+    - "heading": string (clear, descriptive section heading)
+    - "body": string (4-6 paragraphs of rich, detailed markdown content per section. Each paragraph should be 3-5 sentences. Include:
+        - **bold** for key concepts and important terms
+        - *italic* for emphasis
+        - Bullet lists (using - prefix) for enumerating points, steps, or comparisons
+        - Inline `code` for technical terms, function names, libraries, and commands
+        - Concrete real-world examples and scenarios
+        - Where relevant, include short Python/pseudocode snippets wrapped in backticks
+        - Industry references and practical advice)
+- "conclusion": string (3-4 paragraphs summarizing key takeaways, future outlook, and actionable next steps)
+- "diagram_nodes": array of 8-12 objects representing a detailed workflow/architecture, each with:
     - "id": string (unique, e.g. "node_1")
-    - "label": string (short label for the node, max 4 words)
-    - "x": number (x position, space nodes 200-250px apart horizontally, start at 50)
-    - "y": number (y position, space nodes 150-200px apart vertically, start at 50)
-    - "node_type": string (use "input" for the first node, "output" for the last node, "default" for others)
-- "diagram_edges": array of objects connecting the nodes, each with:
+    - "label": string (descriptive label, max 5 words)
+    - "x": number (x position; use a multi-column layout: column 1 at x=50, column 2 at x=300, column 3 at x=550; rows spaced 120px apart starting at y=50)
+    - "y": number (y position)
+    - "node_type": string (use "input" for entry points, "output" for final outputs, "default" for processing steps)
+- "diagram_edges": array of 10-15 objects connecting the nodes to show the complete flow, each with:
     - "id": string (unique, e.g. "edge_1_2")
     - "source": string (source node id)
     - "target": string (target node id)
-    - "label": string (short edge label describing the flow, max 5 words)
-    - "animated": boolean (true for primary flow, false for secondary)
+    - "label": string (descriptive edge label explaining the data/action flow, max 6 words)
+    - "animated": boolean (true for primary/critical flow paths, false for secondary/optional paths)
 
-The diagram should represent the architecture or workflow described in the article.
-Arrange nodes in a logical top-to-bottom or left-to-right flow.
+IMPORTANT for the diagram:
+- The diagram must comprehensively represent the architecture or workflow described in the article
+- Include branching paths where appropriate (not just a linear chain)
+- Show feedback loops or error handling paths where relevant
+- Use a clear multi-column or layered layout so nodes don't overlap
+- Every node should have at least one incoming or outgoing edge
 """
 
 
@@ -87,7 +101,7 @@ async def generate_article(topic: str) -> Article:
     """Generate a new article via OpenAI and persist it."""
     logger.info("Generating article for topic: %s", topic)
     user_prompt = _build_article_prompt(topic)
-    raw = await chat_completion(prompt=user_prompt, system=SYSTEM_PROMPT)
+    raw = await chat_completion(prompt=user_prompt, system=SYSTEM_PROMPT, max_tokens=4096)
 
     cleaned = raw.strip()
     if cleaned.startswith("```"):
