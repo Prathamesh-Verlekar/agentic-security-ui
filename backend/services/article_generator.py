@@ -17,6 +17,7 @@ from backend.models.schemas import (
     DiagramEdge,
     DiagramNode,
 )
+from backend.config import OPENAI_ARTICLE_MODEL
 from backend.services.openai_client import chat_completion
 
 logger = logging.getLogger(__name__)
@@ -101,7 +102,12 @@ async def generate_article(topic: str) -> Article:
     """Generate a new article via OpenAI and persist it."""
     logger.info("Generating article for topic: %s", topic)
     user_prompt = _build_article_prompt(topic)
-    raw = await chat_completion(prompt=user_prompt, system=SYSTEM_PROMPT, max_tokens=4096)
+    raw = await chat_completion(
+        prompt=user_prompt,
+        system=SYSTEM_PROMPT,
+        max_tokens=4096,
+        model=OPENAI_ARTICLE_MODEL,
+    )
 
     cleaned = raw.strip()
     if cleaned.startswith("```"):

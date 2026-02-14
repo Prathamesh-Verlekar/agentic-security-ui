@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { fetchArticle } from "../api/client";
 import ErrorBanner from "../components/ErrorBanner";
@@ -33,15 +33,34 @@ export default function ArticleView() {
       .finally(() => setLoading(false));
   }, [id, navigate]);
 
+  const [copied, setCopied] = useState(false);
+
+  const copyToClipboard = useCallback(() => {
+    if (!article) return;
+    const md = articleToMarkdown(article);
+    navigator.clipboard.writeText(md).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2500);
+    });
+  }, [article]);
+
   if (loading) return <Loader message="Loading article…" />;
   if (error) return <ErrorBanner error={error} />;
   if (!article) return null;
 
   return (
     <div className="article-view">
-      <Link to="/admin" className="back-link">
-        &larr; Back to Dashboard
-      </Link>
+      <div className="article-top-bar">
+        <Link to="/admin" className="back-link">
+          &larr; Back to Dashboard
+        </Link>
+        <button
+          className={`copy-btn ${copied ? "copied" : ""}`}
+          onClick={copyToClipboard}
+        >
+          {copied ? "Copied to Clipboard!" : "Copy for Medium"}
+        </button>
+      </div>
 
       <header className="article-header">
         <h1 className="article-title">{article.title}</h1>
@@ -109,6 +128,33 @@ function renderMarkdown(text: string) {
       </p>
     );
   });
+}
+
+/**
+ * Convert an Article to clean Markdown suitable for pasting into Medium.
+ */
+function articleToMarkdown(article: Article): string {
+  const lines: string[] = [];
+  lines.push(`# ${article.title}`);
+  lines.push("");
+  lines.push(`*${article.subtitle}*`);
+  lines.push("");
+  lines.push("---");
+  lines.push("");
+
+  for (const section of article.sections) {
+    lines.push(`## ${section.heading}`);
+    lines.push("");
+    lines.push(section.body);
+    lines.push("");
+  }
+
+  lines.push("## Conclusion");
+  lines.push("");
+  lines.push(article.conclusion);
+  lines.push("");
+
+  return lines.join("\n");
 }
 
 function InlineMarkdown({ text }: { text: string }) {

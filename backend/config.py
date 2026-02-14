@@ -14,6 +14,7 @@ load_dotenv(dotenv_path=_env_path)
 
 OPENAI_API_KEY: str = os.getenv("OPENAI_API_KEY", "YOUR_API_KEY_HERE")
 OPENAI_MODEL_NAME: str = os.getenv("OPENAI_MODEL_NAME", "gpt-4o-mini")
+OPENAI_ARTICLE_MODEL: str = os.getenv("OPENAI_ARTICLE_MODEL", "gpt-4.1-mini")
 
 # Admin
 ADMIN_PASSWORD: str = os.getenv("ADMIN_PASSWORD", "changeme")

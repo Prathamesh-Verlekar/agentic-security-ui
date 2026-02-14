@@ -13,10 +13,14 @@ def get_openai_client() -> AsyncOpenAI:
 
 
 async def chat_completion(
-    prompt: str, system: str = "", max_tokens: int = 2048
+    prompt: str,
+    system: str = "",
+    max_tokens: int = 2048,
+    model: str | None = None,
 ) -> str:
     """
     Send a single chat-completion request and return the assistant message.
+    Optionally override the model (e.g. use a stronger model for articles).
     """
     client = get_openai_client()
     messages = []
@@ -25,7 +29,7 @@ async def chat_completion(
     messages.append({"role": "user", "content": prompt})
 
     response = await client.chat.completions.create(
-        model=OPENAI_MODEL_NAME,
+        model=model or OPENAI_MODEL_NAME,
         messages=messages,
         temperature=0.7,
         max_tokens=max_tokens,
