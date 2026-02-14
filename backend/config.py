@@ -20,6 +20,9 @@ HOST: str = os.getenv("HOST", "0.0.0.0")
 PORT: int = int(os.getenv("PORT", "8000"))
 
 # CORS
-CORS_ORIGINS: list[str] = os.getenv(
-    "CORS_ORIGINS", "http://localhost:5173,http://localhost:3000"
-).split(",")
+_default_origins = "http://localhost:5173,http://localhost:5174,http://localhost:3000,https://agentic-security-ui.vercel.app"
+CORS_ORIGINS: list[str] = [
+    origin.strip()
+    for origin in os.getenv("CORS_ORIGINS", _default_origins).split(",")
+    if origin.strip()
+]
