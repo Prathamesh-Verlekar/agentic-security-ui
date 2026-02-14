@@ -1,0 +1,26 @@
+# ─── Environment / Secrets ─────────────────────────
+.env
+
+# ─── Python ────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# ─── Backend cache ─────────────────────────────────
+backend/cache/
+
+# ─── Node / Frontend ──────────────────────────────
+node_modules/
+frontend/dist/
+
+# ─── OS ────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+
+# ─── IDE ───────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
