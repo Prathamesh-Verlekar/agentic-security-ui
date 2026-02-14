@@ -10,11 +10,6 @@ export interface ItemSummary {
   tags: string[];
 }
 
-export interface Reference {
-  title: string;
-  url: string;
-}
-
 export interface ItemDetail {
   id: string;
   title: string;
@@ -25,7 +20,6 @@ export interface ItemDetail {
   example_patterns: string[];
   risks_and_pitfalls: string[];
   metrics_or_checks: string[];
-  references: Reference[];
 }
 
 export interface ErrorDetail {

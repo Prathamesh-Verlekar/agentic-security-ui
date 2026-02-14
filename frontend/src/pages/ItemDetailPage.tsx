@@ -85,19 +85,6 @@ export default function ItemDetailPage() {
         </ul>
       </Section>
 
-      {detail.references.length > 0 && (
-        <Section title="References">
-          <ul className="detail-list references-list">
-            {detail.references.map((ref, i) => (
-              <li key={i}>
-                <a href={ref.url} target="_blank" rel="noopener noreferrer">
-                  {ref.title}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </Section>
-      )}
     </div>
   );
 }

@@ -8,7 +8,7 @@ import logging
 import time
 from pathlib import Path
 
-from backend.models.schemas import Category, ItemDetail, ItemSummary, Reference
+from backend.models.schemas import Category, ItemDetail, ItemSummary
 from backend.services.openai_client import chat_completion
 
 logger = logging.getLogger(__name__)
@@ -68,7 +68,6 @@ Return ONLY a valid JSON object (no markdown fences) with these exact keys:
 - "example_patterns": array of 2-4 concrete pattern / pseudo-code strings
 - "risks_and_pitfalls": array of 3-6 bullet strings
 - "metrics_or_checks": array of 3-6 bullet strings
-- "references": array of objects {{ "title": string, "url": string }} (2-4 items, use real URLs when possible)
 """
 
 
@@ -135,7 +134,6 @@ def _entry_to_detail(payload: dict, item: ItemSummary) -> ItemDetail:
                                         ["Risk 1", "Risk 2", "Risk 3"]),
         metrics_or_checks=payload.get("metrics_or_checks",
                                        ["Metric 1", "Metric 2", "Metric 3"]),
-        references=[Reference(**ref) for ref in payload.get("references", [])],
     )
 
 
@@ -162,7 +160,6 @@ def _fallback_payload(item: ItemSummary) -> dict:
             "False-positive rate",
             "Mean time to detection",
         ],
-        "references": [],
     }
 
 

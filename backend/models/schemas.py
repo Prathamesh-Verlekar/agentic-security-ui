@@ -32,11 +32,6 @@ class ItemSummary(BaseModel):
     tags: list[str] = []
 
 
-class Reference(BaseModel):
-    title: str
-    url: str
-
-
 class ItemDetail(BaseModel):
     id: str
     title: str
@@ -58,7 +53,6 @@ class ItemDetail(BaseModel):
         ..., min_length=3, max_length=6,
         description="3-6 metrics bullets"
     )
-    references: list[Reference] = []
 
 
 # ---------------------------------------------------------------------------
