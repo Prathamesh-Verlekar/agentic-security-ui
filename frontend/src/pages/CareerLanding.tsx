@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { fetchCareers, getCareerImageUrl } from "../api/client";
 import ErrorBanner from "../components/ErrorBanner";
 import Loader from "../components/Loader";
@@ -9,6 +9,11 @@ export default function CareerLanding() {
   const [professions, setProfessions] = useState<Profession[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<ErrorDetail | null>(null);
+
+  // Transition planner state
+  const [fromId, setFromId] = useState("");
+  const [toId, setToId] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchCareers()
@@ -23,8 +28,19 @@ export default function CareerLanding() {
       .finally(() => setLoading(false));
   }, []);
 
+  const canNavigate = fromId && toId && fromId !== toId;
+
+  const handleNavigate = () => {
+    if (canNavigate) {
+      navigate(`/careers/transition-plan?from=${fromId}&to=${toId}`);
+    }
+  };
+
   if (loading) return <Loader message="Loading professions…" />;
   if (error) return <ErrorBanner error={error} />;
+
+  const fromProf = professions.find((p) => p.id === fromId);
+  const toProf = professions.find((p) => p.id === toId);
 
   return (
     <div className="career-landing">
@@ -36,6 +52,75 @@ export default function CareerLanding() {
         </p>
       </div>
 
+      {/* ── Transition Planner ──────────────────────────────────────── */}
+      <div className="tp-planner">
+        <div className="tp-planner-header">
+          <span className="tp-planner-icon">🗺️</span>
+          <div>
+            <h3 className="tp-planner-title">Plan Your Career Transition</h3>
+            <p className="tp-planner-desc">
+              Select your current profession and your target — we'll generate a
+              step-by-step roadmap with courses, certifications, and timelines.
+            </p>
+          </div>
+        </div>
+
+        <div className="tp-planner-selectors">
+          <div className="tp-select-group">
+            <label className="tp-label">Current Profession</label>
+            <div className="tp-select-wrapper">
+              {fromProf && <span className="tp-select-emoji">{fromProf.icon_emoji}</span>}
+              <select
+                className="tp-select"
+                value={fromId}
+                onChange={(e) => setFromId(e.target.value)}
+              >
+                <option value="">Select your current role…</option>
+                {professions.map((p) => (
+                  <option key={p.id} value={p.id} disabled={p.id === toId}>
+                    {p.icon_emoji} {p.title}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          <div className="tp-select-arrow">→</div>
+
+          <div className="tp-select-group">
+            <label className="tp-label">Target Profession</label>
+            <div className="tp-select-wrapper">
+              {toProf && <span className="tp-select-emoji">{toProf.icon_emoji}</span>}
+              <select
+                className="tp-select"
+                value={toId}
+                onChange={(e) => setToId(e.target.value)}
+              >
+                <option value="">Select your target role…</option>
+                {professions.map((p) => (
+                  <option key={p.id} value={p.id} disabled={p.id === fromId}>
+                    {p.icon_emoji} {p.title}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          <button
+            className="tp-navigate-btn"
+            disabled={!canNavigate}
+            onClick={handleNavigate}
+          >
+            Generate Roadmap →
+          </button>
+        </div>
+
+        {fromId && toId && fromId === toId && (
+          <p className="tp-error">Please select two different professions.</p>
+        )}
+      </div>
+
+      {/* ── Transition Map Banner ──────────────────────────────────── */}
       <Link to="/careers/transitions" className="transition-map-banner">
         <div className="transition-map-banner-icon">&#x1F5FA;</div>
         <div className="transition-map-banner-text">
@@ -48,6 +133,7 @@ export default function CareerLanding() {
         <span className="transition-map-banner-cta">View Map &rarr;</span>
       </Link>
 
+      {/* ── Career Grid ────────────────────────────────────────────── */}
       <div className="career-grid">
         {professions.map((p) => (
           <Link

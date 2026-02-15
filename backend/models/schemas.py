@@ -186,6 +186,38 @@ class CareerChatResponse(BaseModel):
 
 
 # ---------------------------------------------------------------------------
+# Career Transition Plan schemas
+# ---------------------------------------------------------------------------
+
+class TransitionStep(BaseModel):
+    order: int = Field(..., description="Step number (1-based)")
+    title: str = Field(..., description="Short title, e.g. 'Learn Python & SQL'")
+    category: str = Field(
+        ...,
+        description="One of: Education, Certification, Course, Skill, Experience, Networking, Portfolio",
+    )
+    duration: str = Field(..., description="e.g. '3-6 months', '1-2 years'")
+    description: str = Field(..., description="2-3 sentence description of what to do")
+    resources: list[str] = Field(
+        default_factory=list,
+        description="1-3 recommended resources (courses, books, platforms)",
+    )
+    priority: str = Field(default="required", description="required | recommended | optional")
+
+
+class TransitionPlan(BaseModel):
+    source_id: str
+    source_title: str
+    target_id: str
+    target_title: str
+    summary: str = Field(..., description="2-3 sentence overview of the transition")
+    estimated_duration: str = Field(..., description="Total estimated time, e.g. '1-2 years'")
+    difficulty: str = Field(default="moderate", description="easy | moderate | hard")
+    steps: list[TransitionStep] = Field(default_factory=list, description="6-12 ordered steps")
+    tips: list[str] = Field(default_factory=list, description="3-5 practical tips for the transition")
+
+
+# ---------------------------------------------------------------------------
 # Standard API response wrapper
 # ---------------------------------------------------------------------------
 

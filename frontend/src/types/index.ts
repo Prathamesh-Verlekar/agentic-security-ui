@@ -126,6 +126,30 @@ export interface CareerChatResponse {
   reply: string;
 }
 
+/* ─── Career Transition Plan ─── */
+
+export interface TransitionStep {
+  order: number;
+  title: string;
+  category: string;
+  duration: string;
+  description: string;
+  resources: string[];
+  priority: "required" | "recommended" | "optional";
+}
+
+export interface TransitionPlan {
+  source_id: string;
+  source_title: string;
+  target_id: string;
+  target_title: string;
+  summary: string;
+  estimated_duration: string;
+  difficulty: "easy" | "moderate" | "hard";
+  steps: TransitionStep[];
+  tips: string[];
+}
+
 /* ─── Common ─── */
 
 export interface ErrorDetail {

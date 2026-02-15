@@ -6,6 +6,7 @@ import ArticleView from "./pages/ArticleView";
 import CareerDetailPage from "./pages/CareerDetailPage";
 import CareerLanding from "./pages/CareerLanding";
 import CareerTransitionsPage from "./pages/CareerTransitionsPage";
+import TransitionPlanPage from "./pages/TransitionPlanPage";
 import ItemDetailPage from "./pages/ItemDetailPage";
 import ItemList from "./pages/ItemList";
 import Landing from "./pages/Landing";
@@ -28,6 +29,7 @@ export default function App() {
           {/* Career Counselor routes */}
           <Route path="/careers" element={<CareerLanding />} />
           <Route path="/careers/transitions" element={<CareerTransitionsPage />} />
+          <Route path="/careers/transition-plan" element={<TransitionPlanPage />} />
           <Route path="/careers/:id" element={<CareerDetailPage />} />
 
           {/* Hidden admin routes — no public links point here */}

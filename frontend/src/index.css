@@ -1510,6 +1510,524 @@ a {
   white-space: nowrap;
 }
 
+/* ─── Transition Planner (Career Landing selector) ── */
+.tp-planner {
+  margin-bottom: 2rem;
+  border-radius: 14px;
+  border: 1px solid #1a2035;
+  background: linear-gradient(165deg, #0d1117, #111827);
+  padding: 1.5rem 1.75rem;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+}
+
+.tp-planner-header {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  margin-bottom: 1.25rem;
+}
+
+.tp-planner-icon {
+  font-size: 1.75rem;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.tp-planner-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #f0f4f8;
+  margin: 0 0 0.25rem;
+}
+
+.tp-planner-desc {
+  font-size: 0.85rem;
+  color: #8892b0;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.tp-planner-selectors {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.tp-select-group {
+  flex: 1;
+  min-width: 200px;
+}
+
+.tp-label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.4rem;
+}
+
+.tp-select-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.tp-select-emoji {
+  position: absolute;
+  left: 12px;
+  font-size: 1.1rem;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.tp-select {
+  width: 100%;
+  padding: 0.65rem 1rem;
+  padding-left: 2.4rem;
+  border-radius: 10px;
+  border: 1px solid #1e2740;
+  background: #0d1117;
+  color: #e2e8f0;
+  font-size: 0.88rem;
+  font-family: inherit;
+  cursor: pointer;
+  appearance: none;
+  outline: none;
+  transition: border-color 0.2s;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%2394a3b8' viewBox='0 0 16 16'%3E%3Cpath d='M1.5 5.5L8 12l6.5-6.5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+}
+
+.tp-select:focus {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.15);
+}
+
+.tp-select option {
+  background: #0d1117;
+  color: #e2e8f0;
+}
+
+.tp-select-arrow {
+  font-size: 1.5rem;
+  color: #4b5563;
+  flex-shrink: 0;
+  padding-bottom: 4px;
+  user-select: none;
+}
+
+.tp-navigate-btn {
+  padding: 0.65rem 1.5rem;
+  border-radius: 10px;
+  border: none;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: #fff;
+  font-size: 0.88rem;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.25s;
+  flex-shrink: 0;
+}
+
+.tp-navigate-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #818cf8, #a78bfa);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.3);
+}
+
+.tp-navigate-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.tp-error {
+  font-size: 0.82rem;
+  color: #f87171;
+  margin-top: 0.5rem;
+}
+
+/* ─── Transition Plan Page ──────────────────────── */
+.tp-page {
+  max-width: 900px;
+  padding-top: 1rem;
+}
+
+.tp-hero {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.tp-hero-route {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.tp-hero-profession {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #a5b4fc;
+  text-decoration: none;
+  padding: 0.4rem 1rem;
+  border-radius: 999px;
+  background: rgba(99, 102, 241, 0.1);
+  border: 1px solid rgba(99, 102, 241, 0.25);
+  transition: all 0.2s;
+}
+
+.tp-hero-profession:hover {
+  background: rgba(99, 102, 241, 0.2);
+  border-color: #6366f1;
+}
+
+.tp-hero-arrow {
+  font-size: 1.4rem;
+  color: #4b5563;
+}
+
+.tp-hero-title {
+  font-size: 2.4rem;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  background: linear-gradient(135deg, #34d399, #60a5fa, #a78bfa);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 0.75rem;
+}
+
+.tp-hero-summary {
+  font-size: 1.05rem;
+  color: #8892b0;
+  line-height: 1.7;
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+.tp-hero-meta {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.tp-meta-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.6rem 1.25rem;
+  border-radius: 12px;
+  background: #111827;
+  border: 1px solid #1e2740;
+  min-width: 100px;
+}
+
+.tp-meta-label {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 0.2rem;
+}
+
+.tp-meta-value {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #e2e8f0;
+}
+
+/* ─── Timeline ──────────────────────────────────── */
+.tp-timeline {
+  position: relative;
+  padding-left: 0;
+}
+
+.tp-step {
+  display: flex;
+  gap: 1.25rem;
+  position: relative;
+  min-height: 80px;
+}
+
+.tp-step-spine {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+  width: 44px;
+}
+
+.tp-step-dot {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 2px solid #334155;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  z-index: 1;
+  transition: all 0.2s;
+}
+
+.tp-step:hover .tp-step-dot {
+  transform: scale(1.1);
+}
+
+.tp-step-dot-finish {
+  border-color: #34d399 !important;
+  background: rgba(52, 211, 153, 0.15) !important;
+}
+
+.tp-step-number {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #e2e8f0;
+}
+
+.tp-step-line {
+  width: 2px;
+  flex: 1;
+  min-height: 20px;
+  background: #1e274044;
+}
+
+/* Step card */
+.tp-step-card {
+  flex: 1;
+  background: #111827;
+  border: 1px solid #1a2035;
+  border-left: 3px solid #334155;
+  border-radius: 12px;
+  padding: 1.1rem 1.25rem;
+  margin-bottom: 1rem;
+  transition: all 0.25s;
+}
+
+.tp-step:hover .tp-step-card {
+  border-color: #1e293b;
+  background: #131b2b;
+  transform: translateX(4px);
+}
+
+.tp-finish-card {
+  border-left-color: #34d399 !important;
+  background: rgba(52, 211, 153, 0.04) !important;
+}
+
+.tp-step-card-header {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+  margin-bottom: 0.6rem;
+}
+
+.tp-step-icon {
+  font-size: 1.4rem;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.tp-step-header-text {
+  flex: 1;
+}
+
+.tp-step-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #f0f4f8;
+  margin: 0 0 0.35rem;
+  line-height: 1.3;
+}
+
+.tp-step-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  align-items: center;
+}
+
+.tp-step-category {
+  font-size: 0.68rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.tp-step-duration {
+  font-size: 0.72rem;
+  color: #8892b0;
+  padding: 2px 8px;
+  background: #0d1117;
+  border-radius: 999px;
+}
+
+.tp-step-priority {
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.tp-badge-required {
+  color: #f87171;
+  background: rgba(248, 113, 113, 0.1);
+  border: 1px solid rgba(248, 113, 113, 0.2);
+}
+
+.tp-badge-recommended {
+  color: #fbbf24;
+  background: rgba(251, 191, 36, 0.1);
+  border: 1px solid rgba(251, 191, 36, 0.2);
+}
+
+.tp-badge-optional {
+  color: #94a3b8;
+  background: rgba(148, 163, 184, 0.1);
+  border: 1px solid rgba(148, 163, 184, 0.15);
+}
+
+.tp-step-desc {
+  font-size: 0.88rem;
+  color: #8892b0;
+  line-height: 1.65;
+  margin: 0;
+}
+
+/* Resources */
+.tp-step-resources {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.6rem;
+}
+
+.tp-step-resources-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.tp-step-resource {
+  font-size: 0.75rem;
+  color: #60a5fa;
+  background: rgba(59, 130, 246, 0.08);
+  border: 1px solid rgba(59, 130, 246, 0.15);
+  padding: 2px 8px;
+  border-radius: 6px;
+}
+
+/* ─── Tips Section ──────────────────────────────── */
+.tp-tips {
+  margin-top: 2.5rem;
+  padding: 1.5rem;
+  border-radius: 14px;
+  border: 1px solid #1a2035;
+  background: linear-gradient(165deg, #0d1117, #111827);
+}
+
+.tp-tips-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #f0f4f8;
+  margin: 0 0 1rem;
+}
+
+.tp-tips-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 0.75rem;
+}
+
+.tp-tip-card {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+  padding: 0.85rem 1rem;
+  border-radius: 10px;
+  background: #111827;
+  border: 1px solid #1e2740;
+}
+
+.tp-tip-number {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(99, 102, 241, 0.12);
+  color: #a5b4fc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.tp-tip-text {
+  font-size: 0.85rem;
+  color: #94a3b8;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* ─── Footer CTA ────────────────────────────────── */
+.tp-footer-cta {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 2.5rem;
+  padding-bottom: 2rem;
+}
+
+.tp-footer-link {
+  padding: 0.7rem 1.5rem;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.tp-footer-link.primary {
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: #fff;
+}
+
+.tp-footer-link.primary:hover {
+  background: linear-gradient(135deg, #818cf8, #a78bfa);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.25);
+}
+
+.tp-footer-link.secondary {
+  background: #111827;
+  color: #94a3b8;
+  border: 1px solid #1e2740;
+}
+
+.tp-footer-link.secondary:hover {
+  background: #1e293b;
+  color: #e2e8f0;
+}
+
 /* ─── Career Transition Page ─────────────────────── */
 .transitions-page {
   padding-top: 1rem;
@@ -1926,5 +2444,58 @@ a {
 
   .transitions-title {
     font-size: 1.8rem;
+  }
+
+  /* Transition planner responsive */
+  .tp-planner-selectors {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .tp-select-arrow {
+    text-align: center;
+    transform: rotate(90deg);
+    margin: -0.25rem 0;
+  }
+
+  .tp-navigate-btn {
+    width: 100%;
+  }
+
+  /* Transition plan page responsive */
+  .tp-hero-title {
+    font-size: 1.6rem;
+  }
+
+  .tp-hero-route {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .tp-step {
+    gap: 0.75rem;
+  }
+
+  .tp-step-dot {
+    width: 36px;
+    height: 36px;
+  }
+
+  .tp-step-spine {
+    width: 36px;
+  }
+
+  .tp-step-card-header {
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .tp-tips-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .tp-footer-cta {
+    flex-direction: column;
+    align-items: center;
   }
 }

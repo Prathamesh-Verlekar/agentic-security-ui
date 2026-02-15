@@ -12,6 +12,7 @@ import type {
   ItemDetail,
   ItemSummary,
   Profession,
+  TransitionPlan,
 } from "../types";
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8000";
@@ -98,6 +99,15 @@ export async function chatWithCareer(
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ messages }),
   });
+}
+
+export async function fetchTransitionPlan(
+  sourceId: string,
+  targetId: string
+): Promise<ApiResponse<TransitionPlan>> {
+  return apiFetch<TransitionPlan>(
+    `/api/v1/careers/transition-plan?source=${encodeURIComponent(sourceId)}&target=${encodeURIComponent(targetId)}`
+  );
 }
 
 // ─── Admin endpoints ─────────────────────────────────────────────────────────

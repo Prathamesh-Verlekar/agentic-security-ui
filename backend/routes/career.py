@@ -16,10 +16,12 @@ from backend.models.schemas import (
     CareerTransitionGraph,
     ErrorDetail,
     Profession,
+    TransitionPlan,
 )
 from backend.models.career_seed import PROFESSIONS, PROFESSIONS_BY_ID, CAREER_TRANSITIONS
 from backend.services.career_generator import generate_career_detail
 from backend.services.career_chat import chat_with_career_agent
+from backend.services.transition_planner import generate_transition_plan
 from backend.services.image_generator import (
     generate_career_image,
     get_cached_image_path,
@@ -57,6 +59,57 @@ async def get_career_transitions():
         edges=CAREER_TRANSITIONS,
     )
     return ApiResponse(success=True, data=graph)
+
+
+# ---------------------------------------------------------------------------
+# GET /api/v1/careers/transition-plan — generate a step-by-step plan
+# ---------------------------------------------------------------------------
+@router.get("/transition-plan", response_model=ApiResponse[TransitionPlan])
+async def get_transition_plan(source: str, target: str):
+    """Generate an LLM-powered step-by-step transition plan between two professions."""
+    source_prof = PROFESSIONS_BY_ID.get(source)
+    target_prof = PROFESSIONS_BY_ID.get(target)
+
+    if not source_prof:
+        raise HTTPException(
+            status_code=404,
+            detail=ApiResponse(
+                success=False,
+                error=ErrorDetail(message=f"Source profession '{source}' not found"),
+            ).model_dump(),
+        )
+    if not target_prof:
+        raise HTTPException(
+            status_code=404,
+            detail=ApiResponse(
+                success=False,
+                error=ErrorDetail(message=f"Target profession '{target}' not found"),
+            ).model_dump(),
+        )
+    if source == target:
+        raise HTTPException(
+            status_code=400,
+            detail=ApiResponse(
+                success=False,
+                error=ErrorDetail(message="Source and target professions must be different"),
+            ).model_dump(),
+        )
+
+    try:
+        plan = await generate_transition_plan(source_prof, target_prof)
+        return ApiResponse(success=True, data=plan)
+    except Exception as exc:
+        logger.exception("Error generating transition plan %s → %s", source, target)
+        raise HTTPException(
+            status_code=500,
+            detail=ApiResponse(
+                success=False,
+                error=ErrorDetail(
+                    message="Failed to generate transition plan",
+                    details=str(exc),
+                ),
+            ).model_dump(),
+        )
 
 
 # ---------------------------------------------------------------------------
