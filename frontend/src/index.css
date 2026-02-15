@@ -1874,6 +1874,7 @@ a {
 .journey-person-icon {
   font-size: 2rem;
   display: block;
+  transform: scaleX(-1);
   animation: personBounce 1.2s ease-in-out infinite;
 }
 

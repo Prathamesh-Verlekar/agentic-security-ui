@@ -28,15 +28,32 @@ SYSTEM_PROMPT = (
 REGION_CONTEXT = {
     "usa": {
         "name": "United States",
-        "resource_note": "US-based platforms, certifications, and institutions (e.g. Coursera, edX, Google/AWS/Microsoft certs, US university programs)",
-        "education_note": "US education paths and accreditation",
-        "market_note": "US job market, including major tech hubs (SF, NYC, Seattle, Austin) and industry-specific cities",
+        "resource_note": "US-based platforms, certifications, and institutions (e.g. Coursera, edX, Google/AWS/Microsoft certs, US university programs, LinkedIn Learning)",
+        "education_note": "US education paths and accreditation (community colleges, state universities, Ivy League, online MS programs from Georgia Tech, etc.)",
+        "market_note": "US job market, including major hubs (San Francisco, NYC, Seattle, Austin, Boston) and industry-specific regions",
     },
     "india": {
         "name": "India",
-        "resource_note": "India-relevant platforms and certifications (e.g. NPTEL/SWAYAM, Coursera, Udemy, Indian professional bodies like ICAI/ICSI, IITs/IIMs executive programs, NASSCOM, government skill portals like Skill India)",
-        "education_note": "Indian education system (UGC-recognized degrees, AICTE-approved courses, GATE, NET)",
-        "market_note": "Indian job market, including IT hubs (Bangalore, Hyderabad, Pune, Gurugram), startup ecosystem, and government/PSU opportunities",
+        "resource_note": (
+            "India-specific resources: NPTEL/SWAYAM courses (free, from IITs/IISc with certificates), "
+            "Coursera/Udemy (popular in India), Unacademy, UpGrad, Great Learning, Simplilearn, "
+            "IIT/IIM executive programs, ICAI (for CA), ICSI (for CS), NASSCOM FutureSkills, "
+            "Skill India / PMKVY government portals, Internshala, Naukri Learning. "
+            "Include specific Indian certification bodies and entrance exams where relevant"
+        ),
+        "education_note": (
+            "Indian education system: UGC-recognized degrees, AICTE-approved engineering colleges, "
+            "IITs/NITs/BITS Pilani for tech, IIMs/ISB/XLRI for management, "
+            "AIIMS/CMC for medicine, NLUs for law, "
+            "entrance exams (JEE, CAT, GATE, NEET, CLAT, UPSC, SSC, bank PO). "
+            "Mention distance/online options like IGNOU, IIM online programs, UpGrad degrees"
+        ),
+        "market_note": (
+            "Indian job market: IT/software hubs (Bangalore, Hyderabad, Pune, Chennai, Gurugram, Noida), "
+            "major employers (TCS, Infosys, Wipro, HCL, Cognizant, FAANG India offices), "
+            "startup ecosystem (Bangalore, NCR, Mumbai), government/PSU routes, "
+            "and expected salary ranges in Indian Rupees (₹ in lakhs per annum)"
+        ),
     },
 }
 
@@ -103,6 +120,7 @@ Return ONLY a valid JSON object with these exact keys:
 Make the steps practical and ordered chronologically.
 Include {ctx["name"]}-specific certifications, courses, institutions, and platforms by name.
 Consider transferable skills and the {ctx["market_note"]}.
+When mentioning any costs or salary expectations, use the local currency for {ctx["name"]}.
 """
 
 

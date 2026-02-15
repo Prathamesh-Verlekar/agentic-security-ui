@@ -29,18 +29,39 @@ REGION_CONTEXT = {
     "usa": {
         "name": "United States",
         "currency": "USD ($)",
-        "salary_note": "base it on realistic US market data",
-        "education_note": "US education system (Associate's, Bachelor's, Master's, PhD; mention specific US universities or systems when relevant)",
-        "certification_note": "US-recognized certifications and licensing bodies",
-        "job_market_note": "the US job market, including Bureau of Labor Statistics data where applicable",
+        "salary_note": "base it on realistic US market data in USD. Example format: '$65,000 – $180,000 per year'. Include entry-level to senior ranges",
+        "education_note": "US education system (Associate's, Bachelor's, Master's, PhD from US universities like MIT, Stanford, CMU, state universities, community colleges)",
+        "certification_note": "US-recognized certifications and licensing bodies (AWS, Google Cloud, PMP, CPA, bar exam, USMLE, etc.)",
+        "job_market_note": "the US job market, Bureau of Labor Statistics projections, major hubs (San Francisco, NYC, Seattle, Austin, Boston)",
     },
     "india": {
         "name": "India",
         "currency": "INR (₹)",
-        "salary_note": "base it on realistic Indian market data in INR (e.g. ₹6,00,000 – ₹25,00,000 per annum). Use the Indian numbering system (lakhs/crores)",
-        "education_note": "Indian education system (10+2, B.Tech/B.E./MBBS/B.Com/BA/LLB, M.Tech/MBA/MD, PhD; mention IITs, IIMs, AIIMS, NLUs, or other top Indian institutions where relevant)",
-        "certification_note": "certifications recognized in India (e.g. CA, CS, GATE, NEET, NET, relevant Indian professional bodies)",
-        "job_market_note": "the Indian job market, including growth in IT hubs (Bangalore, Hyderabad, Pune, NCR), startup ecosystem, and government sector opportunities",
+        "salary_note": (
+            "base it on realistic 2024 Indian market data in INR using the Indian numbering system. "
+            "IMPORTANT: Use lakhs and crores format. Example formats: '₹4 LPA – ₹12 LPA' for entry-level, "
+            "'₹15 LPA – ₹40 LPA' for mid-level, '₹50 LPA – ₹1.5 Cr+' for senior. "
+            "LPA = Lakhs Per Annum. Show the full range from fresher to senior/director level"
+        ),
+        "education_note": (
+            "Indian education system: 10+2 board exams, then undergraduate degrees like B.Tech/B.E. (from IITs, NITs, BITS Pilani, VIT, top state engineering colleges), "
+            "MBBS (AIIMS, CMC Vellore, JIPMER), B.Com/BBA (SRCC, Christ University), BA LLB (NLUs, NLSIU), "
+            "MBA (IIMs, ISB, XLRI, FMS Delhi, SPJIMR), M.Tech, PhD. "
+            "Mention entrance exams: JEE Main/Advanced, NEET, CAT, CLAT, GATE, UPSC where relevant"
+        ),
+        "certification_note": (
+            "Indian certifications: CA (ICAI), CS (ICSI), CMA, GATE score for PSUs, "
+            "NET/SET for teaching, NEET for medicine. Also mention global certs popular in India: "
+            "AWS/Azure/GCP certifications, PMP, Scrum Master, CFA, FRM, Google/Meta digital marketing certificates, "
+            "NPTEL/SWAYAM courses with certification from IITs/IISc"
+        ),
+        "job_market_note": (
+            "the Indian job market: IT/software hubs (Bangalore, Hyderabad, Pune, Chennai, Gurugram/Noida), "
+            "top employers (TCS, Infosys, Wipro, HCL for IT; Deloitte, McKinsey, BCG for consulting; "
+            "FAANG/MNC offices in India), startup ecosystem (Bangalore, NCR), "
+            "government/PSU jobs (via UPSC, SSC, state PCS, bank exams), "
+            "and freelancing/remote work trends"
+        ),
     },
 }
 
