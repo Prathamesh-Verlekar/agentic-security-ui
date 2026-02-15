@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { fetchCareerTransitions } from "../api/client";
 import CareerTransitionGraphView from "../components/CareerTransitionGraph";
 import ErrorBanner from "../components/ErrorBanner";
 import Loader from "../components/Loader";
-import type { CareerTransitionGraph, ErrorDetail } from "../types";
+import type { CareerTransitionGraph, ErrorDetail, Region } from "../types";
 
 export default function CareerTransitionsPage() {
+  const [searchParams] = useSearchParams();
+  const region: Region = (searchParams.get("region") ?? "usa") === "india" ? "india" : "usa";
+
   const [graph, setGraph] = useState<CareerTransitionGraph | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<ErrorDetail | null>(null);
@@ -30,7 +33,7 @@ export default function CareerTransitionsPage() {
 
   return (
     <div className="transitions-page">
-      <Link to="/careers" className="back-link">
+      <Link to={`/careers?region=${region}`} className="back-link">
         &larr; Back to Careers
       </Link>
 
@@ -45,6 +48,7 @@ export default function CareerTransitionsPage() {
       <CareerTransitionGraphView
         professions={graph.nodes}
         transitions={graph.edges}
+        region={region}
       />
     </div>
   );

@@ -12,6 +12,7 @@ import type {
   ItemDetail,
   ItemSummary,
   Profession,
+  Region,
   TransitionPlan,
 } from "../types";
 
@@ -77,9 +78,10 @@ export async function fetchCareers(): Promise<ApiResponse<Profession[]>> {
 }
 
 export async function fetchCareerDetail(
-  professionId: string
+  professionId: string,
+  region: Region = "usa"
 ): Promise<ApiResponse<CareerDetail>> {
-  return apiFetch<CareerDetail>(`/api/v1/careers/${professionId}`);
+  return apiFetch<CareerDetail>(`/api/v1/careers/${professionId}?region=${region}`);
 }
 
 export function getCareerImageUrl(professionId: string): string {
@@ -92,9 +94,10 @@ export async function fetchCareerTransitions(): Promise<ApiResponse<CareerTransi
 
 export async function chatWithCareer(
   professionId: string,
-  messages: ChatMessage[]
+  messages: ChatMessage[],
+  region: Region = "usa"
 ): Promise<ApiResponse<CareerChatResponse>> {
-  return apiFetch<CareerChatResponse>(`/api/v1/careers/${professionId}/chat`, {
+  return apiFetch<CareerChatResponse>(`/api/v1/careers/${professionId}/chat?region=${region}`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ messages }),
@@ -103,10 +106,11 @@ export async function chatWithCareer(
 
 export async function fetchTransitionPlan(
   sourceId: string,
-  targetId: string
+  targetId: string,
+  region: Region = "usa"
 ): Promise<ApiResponse<TransitionPlan>> {
   return apiFetch<TransitionPlan>(
-    `/api/v1/careers/transition-plan?source=${encodeURIComponent(sourceId)}&target=${encodeURIComponent(targetId)}`
+    `/api/v1/careers/transition-plan?source=${encodeURIComponent(sourceId)}&target=${encodeURIComponent(targetId)}&region=${region}`
   );
 }
 

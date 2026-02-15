@@ -1,13 +1,14 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { chatWithCareer } from "../api/client";
-import type { ChatMessage } from "../types";
+import type { ChatMessage, Region } from "../types";
 
 interface Props {
   professionId: string;
   professionTitle: string;
+  region?: Region;
 }
 
-export default function CareerChat({ professionId, professionTitle }: Props) {
+export default function CareerChat({ professionId, professionTitle, region = "usa" }: Props) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -29,7 +30,7 @@ export default function CareerChat({ professionId, professionTitle }: Props) {
     setLoading(true);
 
     try {
-      const res = await chatWithCareer(professionId, newHistory);
+      const res = await chatWithCareer(professionId, newHistory, region);
       if (res.success && res.data) {
         const assistantMsg: ChatMessage = {
           role: "assistant",
@@ -52,7 +53,7 @@ export default function CareerChat({ professionId, professionTitle }: Props) {
     } finally {
       setLoading(false);
     }
-  }, [input, loading, messages, professionId]);
+  }, [input, loading, messages, professionId, region]);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {

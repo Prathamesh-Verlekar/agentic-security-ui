@@ -1,5 +1,6 @@
 """
 Career counselor chat service — multi-turn conversation about a specific profession.
+Supports region-specific context (India / USA).
 Uses gpt-4o-mini for cost efficiency.
 """
 
@@ -11,17 +12,29 @@ from backend.config import OPENAI_MODEL_NAME
 
 logger = logging.getLogger(__name__)
 
+REGION_NAMES = {
+    "usa": "United States",
+    "india": "India",
+}
 
-def _build_system_prompt(profession: Profession) -> str:
+DEFAULT_REGION = "usa"
+
+
+def _build_system_prompt(profession: Profession, region: str) -> str:
+    region_name = REGION_NAMES.get(region, REGION_NAMES[DEFAULT_REGION])
     return (
         f"You are an experienced, empathetic career counselor specializing in the "
-        f"'{profession.title}' profession. Your goal is to help the user understand "
-        f"this career path thoroughly.\n\n"
+        f"'{profession.title}' profession **in {region_name}**. Your goal is to help "
+        f"the user understand this career path in the context of the {region_name} market.\n\n"
         f"Profession overview: {profession.short_description}\n"
-        f"Relevant tags: {', '.join(profession.tags)}\n\n"
+        f"Relevant tags: {', '.join(profession.tags)}\n"
+        f"Region context: {region_name}\n\n"
         f"Guidelines:\n"
-        f"- Answer questions about salary expectations, required skills, education paths, "
-        f"work-life balance, career growth, industry trends, and day-to-day responsibilities.\n"
+        f"- Answer questions about salary expectations (in local currency), required skills, "
+        f"education paths (using {region_name} education system and institutions), "
+        f"work-life balance, career growth, industry trends, and day-to-day responsibilities "
+        f"**specific to {region_name}**.\n"
+        f"- Mention region-specific companies, institutions, certifications, and job markets.\n"
         f"- Be encouraging but honest — mention both opportunities and challenges.\n"
         f"- Provide specific, actionable advice when possible.\n"
         f"- If the user asks about a different profession, briefly acknowledge it but steer "
@@ -34,20 +47,26 @@ def _build_system_prompt(profession: Profession) -> str:
 async def chat_with_career_agent(
     profession: Profession,
     messages: list[ChatMessage],
+    region: str = DEFAULT_REGION,
 ) -> str:
     """
     Send a multi-turn conversation to OpenAI and return the assistant reply.
     The full conversation history is passed for context continuity.
     """
-    system = _build_system_prompt(profession)
+    region = region.lower() if region else DEFAULT_REGION
+    if region not in REGION_NAMES:
+        region = DEFAULT_REGION
+
+    system = _build_system_prompt(profession, region)
 
     openai_messages: list[dict] = [{"role": "system", "content": system}]
     for msg in messages:
         openai_messages.append({"role": msg.role, "content": msg.content})
 
     logger.info(
-        "Career chat for %s — %d messages in history",
+        "Career chat for %s (%s) — %d messages in history",
         profession.id,
+        region,
         len(messages),
     )
 

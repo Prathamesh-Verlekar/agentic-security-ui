@@ -1,13 +1,18 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useSearchParams } from "react-router-dom";
 import { fetchCareerDetail, fetchCareerTransitions, getCareerImageUrl } from "../api/client";
 import CareerChat from "../components/CareerChat";
 import ErrorBanner from "../components/ErrorBanner";
 import Loader from "../components/Loader";
-import type { CareerDetail, CareerTransitionEdge, ErrorDetail, Profession } from "../types";
+import type { CareerDetail, CareerTransitionEdge, ErrorDetail, Profession, Region } from "../types";
+
+const REGION_FLAGS: Record<Region, string> = { usa: "🇺🇸", india: "🇮🇳" };
 
 export default function CareerDetailPage() {
   const { id } = useParams<{ id: string }>();
+  const [searchParams] = useSearchParams();
+  const region: Region = (searchParams.get("region") ?? "usa") === "india" ? "india" : "usa";
+
   const [detail, setDetail] = useState<CareerDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<ErrorDetail | null>(null);
@@ -17,7 +22,7 @@ export default function CareerDetailPage() {
     if (!id) return;
     setLoading(true);
 
-    const detailP = fetchCareerDetail(id);
+    const detailP = fetchCareerDetail(id, region);
     const transP = fetchCareerTransitions();
 
     Promise.all([detailP, transP])
@@ -39,7 +44,7 @@ export default function CareerDetailPage() {
       })
       .catch((err) => setError({ message: String(err) }))
       .finally(() => setLoading(false));
-  }, [id]);
+  }, [id, region]);
 
   if (loading) return <Loader message="Generating career insights…" />;
   if (error) return <ErrorBanner error={error} />;
@@ -47,17 +52,16 @@ export default function CareerDetailPage() {
 
   return (
     <div className="career-detail">
-      <Link to="/careers" className="back-link">
-        &larr; Back to Careers
-      </Link>
+      <div style={{ display: "flex", alignItems: "center", gap: "1rem", flexWrap: "wrap" }}>
+        <Link to={`/careers?region=${region}`} className="back-link">
+          &larr; Back to Careers
+        </Link>
+        <span className="region-badge">{REGION_FLAGS[region]} {region.toUpperCase()}</span>
+      </div>
 
       {/* Hero section with image */}
       <div className="career-detail-hero">
-        <img
-          src={getCareerImageUrl(id)}
-          alt={detail.title}
-          className="career-detail-hero-image"
-        />
+        <img src={getCareerImageUrl(id)} alt={detail.title} className="career-detail-hero-image" />
         <div className="career-detail-hero-text">
           <h1 className="career-detail-title">{detail.title}</h1>
           <p className="career-detail-salary">{detail.salary_range}</p>
@@ -75,9 +79,7 @@ export default function CareerDetailPage() {
         <h2 className="career-section-title">Key Skills</h2>
         <div className="career-skills-grid">
           {detail.key_skills.map((skill, i) => (
-            <span key={i} className="career-skill-chip">
-              {skill}
-            </span>
+            <span key={i} className="career-skill-chip">{skill}</span>
           ))}
         </div>
       </section>
@@ -96,9 +98,7 @@ export default function CareerDetailPage() {
             <div key={i} className="career-timeline-item">
               <div className="career-timeline-marker">
                 <div className="career-timeline-dot" />
-                {i < detail.career_path.length - 1 && (
-                  <div className="career-timeline-line" />
-                )}
+                {i < detail.career_path.length - 1 && <div className="career-timeline-line" />}
               </div>
               <div className="career-timeline-content">
                 <h3 className="career-timeline-stage">{stage.stage}</h3>
@@ -129,9 +129,7 @@ export default function CareerDetailPage() {
               <span className="proscons-icon">✓</span> Advantages
             </h3>
             <ul className="career-proscons-list">
-              {detail.pros.map((pro, i) => (
-                <li key={i}>{pro}</li>
-              ))}
+              {detail.pros.map((pro, i) => (<li key={i}>{pro}</li>))}
             </ul>
           </div>
           <div className="career-proscons-column cons">
@@ -139,9 +137,7 @@ export default function CareerDetailPage() {
               <span className="proscons-icon">✕</span> Challenges
             </h3>
             <ul className="career-proscons-list">
-              {detail.cons.map((con, i) => (
-                <li key={i}>{con}</li>
-              ))}
+              {detail.cons.map((con, i) => (<li key={i}>{con}</li>))}
             </ul>
           </div>
         </div>
@@ -164,7 +160,7 @@ export default function CareerDetailPage() {
             {transitions.map((t) => (
               <Link
                 key={t.edge.id}
-                to={`/careers/${t.target.id}`}
+                to={`/careers/${t.target.id}?region=${region}`}
                 className={`career-transition-card difficulty-${t.edge.difficulty}`}
               >
                 <div className="career-transition-card-top">
@@ -183,7 +179,7 @@ export default function CareerDetailPage() {
               </Link>
             ))}
           </div>
-          <Link to="/careers/transitions" className="transition-map-link">
+          <Link to={`/careers/transitions?region=${region}`} className="transition-map-link">
             View full transition map &rarr;
           </Link>
         </section>
@@ -192,7 +188,7 @@ export default function CareerDetailPage() {
       {/* Chat Agent */}
       <section className="career-section">
         <h2 className="career-section-title">Ask the Career Counselor</h2>
-        <CareerChat professionId={id} professionTitle={detail.title} />
+        <CareerChat professionId={id} professionTitle={detail.title} region={region} />
       </section>
     </div>
   );

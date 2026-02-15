@@ -14,7 +14,7 @@ import {
   Position,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
-import type { CareerTransitionEdge, Profession } from "../types";
+import type { CareerTransitionEdge, Profession, Region } from "../types";
 
 /* ─── Difficulty config ──────────────────────────────────────────────────── */
 const DIFF_COLORS: Record<string, { color: string; bg: string; label: string }> = {
@@ -92,9 +92,10 @@ const nodeTypes = { profession: ProfessionNode };
 interface Props {
   professions: Profession[];
   transitions: CareerTransitionEdge[];
+  region?: Region;
 }
 
-export default function CareerTransitionGraphView({ professions, transitions }: Props) {
+export default function CareerTransitionGraphView({ professions, transitions, region = "usa" }: Props) {
   const [selectedNode, setSelectedNode] = useState<string | null>(null);
 
   /* ── Layout ──────────────────────────────────────────────────────────── */
@@ -264,7 +265,7 @@ export default function CareerTransitionGraphView({ professions, transitions }: 
               <span className="tg-panel-emoji">{selectedProf.icon_emoji}</span>
               <div>
                 <h3 className="tg-panel-title">{selectedProf.title}</h3>
-                <Link to={`/careers/${selectedProf.id}`} className="tg-panel-detail-link">
+                <Link to={`/careers/${selectedProf.id}?region=${region}`} className="tg-panel-detail-link">
                   View full profile &rarr;
                 </Link>
               </div>
@@ -285,7 +286,7 @@ export default function CareerTransitionGraphView({ professions, transitions }: 
                     return (
                       <Link
                         key={t.edge.id}
-                        to={`/careers/${t.target.id}`}
+                        to={`/careers/${t.target.id}?region=${region}`}
                         className="tg-panel-card"
                         style={{ borderLeftColor: d.color }}
                       >

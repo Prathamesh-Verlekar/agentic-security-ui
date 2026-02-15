@@ -3,7 +3,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import { fetchTransitionPlan } from "../api/client";
 import ErrorBanner from "../components/ErrorBanner";
 import Loader from "../components/Loader";
-import type { ErrorDetail, TransitionPlan, TransitionStep } from "../types";
+import type { ErrorDetail, Region, TransitionPlan, TransitionStep } from "../types";
 
 /* ─── Category config ──────────────────────────────────────────────────────── */
 const CATEGORY_ICONS: Record<string, string> = {
@@ -44,6 +44,7 @@ export default function TransitionPlanPage() {
   const [searchParams] = useSearchParams();
   const sourceId = searchParams.get("from") ?? "";
   const targetId = searchParams.get("to") ?? "";
+  const region: Region = (searchParams.get("region") ?? "usa") === "india" ? "india" : "usa";
 
   const [plan, setPlan] = useState<TransitionPlan | null>(null);
   const [loading, setLoading] = useState(true);
@@ -62,7 +63,7 @@ export default function TransitionPlanPage() {
       return;
     }
     setLoading(true);
-    fetchTransitionPlan(sourceId, targetId)
+    fetchTransitionPlan(sourceId, targetId, region)
       .then((res) => {
         if (res.success && res.data) {
           setPlan(res.data);
@@ -72,7 +73,7 @@ export default function TransitionPlanPage() {
       })
       .catch((err) => setError({ message: String(err) }))
       .finally(() => setLoading(false));
-  }, [sourceId, targetId]);
+  }, [sourceId, targetId, region]);
 
   // Close popup on click outside
   useEffect(() => {
@@ -106,18 +107,18 @@ export default function TransitionPlanPage() {
 
   return (
     <div className="tp-page">
-      <Link to="/careers" className="back-link">
+      <Link to={`/careers?region=${region}`} className="back-link">
         &larr; Back to Careers
       </Link>
 
       {/* ── Hero ──────────────────────────────────────────────────────── */}
       <div className="tp-hero">
         <div className="tp-hero-route">
-          <Link to={`/careers/${plan.source_id}`} className="tp-hero-profession">
+          <Link to={`/careers/${plan.source_id}?region=${region}`} className="tp-hero-profession">
             {plan.source_title}
           </Link>
           <span className="tp-hero-arrow">→</span>
-          <Link to={`/careers/${plan.target_id}`} className="tp-hero-profession">
+          <Link to={`/careers/${plan.target_id}?region=${region}`} className="tp-hero-profession">
             {plan.target_title}
           </Link>
         </div>
@@ -252,7 +253,7 @@ export default function TransitionPlanPage() {
                   resume, start applying, and land your dream role.
                 </p>
                 <Link
-                  to={`/careers/${plan.target_id}`}
+                  to={`/careers/${plan.target_id}?region=${region}`}
                   className="journey-popup-link"
                   onClick={() => setPopupIdx(null)}
                 >
@@ -319,10 +320,10 @@ export default function TransitionPlanPage() {
 
       {/* ── Footer ────────────────────────────────────────────────────── */}
       <div className="tp-footer-cta">
-        <Link to={`/careers/${plan.target_id}`} className="tp-footer-link primary">
+        <Link to={`/careers/${plan.target_id}?region=${region}`} className="tp-footer-link primary">
           Learn more about {plan.target_title} →
         </Link>
-        <Link to="/careers" className="tp-footer-link secondary">
+        <Link to={`/careers?region=${region}`} className="tp-footer-link secondary">
           ← Plan a different transition
         </Link>
       </div>

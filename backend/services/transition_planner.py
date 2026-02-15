@@ -1,6 +1,7 @@
 """
 Generate a step-by-step career transition plan between two professions via OpenAI.
 Persists cache to a local JSON file with a 10-day TTL per entry.
+Supports region-specific content (India / USA).
 """
 
 import json
@@ -22,6 +23,24 @@ SYSTEM_PROMPT = (
     "You help professionals navigate career changes with practical, step-by-step plans. "
     "Return valid JSON only — no markdown fences."
 )
+
+# ─── Region context ───────────────────────────────────────────────────────────
+REGION_CONTEXT = {
+    "usa": {
+        "name": "United States",
+        "resource_note": "US-based platforms, certifications, and institutions (e.g. Coursera, edX, Google/AWS/Microsoft certs, US university programs)",
+        "education_note": "US education paths and accreditation",
+        "market_note": "US job market, including major tech hubs (SF, NYC, Seattle, Austin) and industry-specific cities",
+    },
+    "india": {
+        "name": "India",
+        "resource_note": "India-relevant platforms and certifications (e.g. NPTEL/SWAYAM, Coursera, Udemy, Indian professional bodies like ICAI/ICSI, IITs/IIMs executive programs, NASSCOM, government skill portals like Skill India)",
+        "education_note": "Indian education system (UGC-recognized degrees, AICTE-approved courses, GATE, NET)",
+        "market_note": "Indian job market, including IT hubs (Bangalore, Hyderabad, Pune, Gurugram), startup ecosystem, and government/PSU opportunities",
+    },
+}
+
+DEFAULT_REGION = "usa"
 
 
 # ─── File-backed cache helpers ────────────────────────────────────────────────
@@ -51,8 +70,9 @@ def _is_entry_valid(entry: dict) -> bool:
 
 # ─── Prompt builder ───────────────────────────────────────────────────────────
 
-def _build_prompt(source: Profession, target: Profession) -> str:
-    return f"""Create a comprehensive career transition plan for someone moving from:
+def _build_prompt(source: Profession, target: Profession, region: str) -> str:
+    ctx = REGION_CONTEXT.get(region, REGION_CONTEXT[DEFAULT_REGION])
+    return f"""Create a comprehensive career transition plan for someone in **{ctx["name"]}** moving from:
 
 CURRENT PROFESSION: {source.title}
   Description: {source.short_description}
@@ -62,24 +82,27 @@ TARGET PROFESSION: {target.title}
   Description: {target.short_description}
   Skills/Tags: {", ".join(target.tags)}
 
+REGION: {ctx["name"]}
+All recommendations should be specific to the {ctx["name"]} market.
+
 Return ONLY a valid JSON object with these exact keys:
 
-- "summary": string (2-3 sentences summarizing this transition — what transferable skills help, what gaps exist)
+- "summary": string (2-3 sentences summarizing this transition in {ctx["name"]} — mention transferable skills and market-specific context)
 - "estimated_duration": string (total realistic estimate, e.g. "1-2 years", "6-12 months")
 - "difficulty": string (one of "easy", "moderate", "hard")
 - "steps": array of 8-12 objects, each with:
     - "order": integer (1-based, sequential)
-    - "title": string (short action title, e.g. "Master Python & Data Libraries")
+    - "title": string (short action title)
     - "category": string (one of: "Education", "Certification", "Course", "Skill", "Experience", "Networking", "Portfolio")
     - "duration": string (e.g. "2-3 months", "3-6 months")
-    - "description": string (2-3 sentences explaining what to do and why it matters for this transition)
-    - "resources": array of 1-3 strings (specific course names, platforms, books, or certifications — be specific, e.g. "Coursera: Google Data Analytics Certificate")
+    - "description": string (2-3 sentences; mention {ctx["name"]}-specific context like {ctx["education_note"]} and {ctx["market_note"]})
+    - "resources": array of 1-3 strings (specific {ctx["resource_note"]} — be very specific with names)
     - "priority": string (one of "required", "recommended", "optional")
-- "tips": array of 3-5 strings (practical advice for someone making this specific transition)
+- "tips": array of 3-5 strings (practical advice specific to making this transition in {ctx["name"]})
 
-Make the steps practical and ordered chronologically — what to do first, second, etc.
-Include specific certifications, courses, and platforms by name where possible.
-Consider transferable skills from the current profession.
+Make the steps practical and ordered chronologically.
+Include {ctx["name"]}-specific certifications, courses, institutions, and platforms by name.
+Consider transferable skills and the {ctx["market_note"]}.
 """
 
 
@@ -88,12 +111,17 @@ Consider transferable skills from the current profession.
 async def generate_transition_plan(
     source: Profession,
     target: Profession,
+    region: str = DEFAULT_REGION,
 ) -> TransitionPlan:
     """
-    Return a TransitionPlan between two professions.
+    Return a TransitionPlan between two professions for a given region.
     Serves from cache when entry < 10 days old; otherwise generates via OpenAI.
     """
-    cache_key = f"{source.id}__to__{target.id}"
+    region = region.lower() if region else DEFAULT_REGION
+    if region not in REGION_CONTEXT:
+        region = DEFAULT_REGION
+
+    cache_key = f"{source.id}__to__{target.id}__{region}"
     cache = _load_cache()
 
     if cache_key in cache and _is_entry_valid(cache[cache_key]):
@@ -101,8 +129,8 @@ async def generate_transition_plan(
         payload = cache[cache_key]["data"]
         return _payload_to_plan(payload, source, target)
 
-    logger.info("Generating transition plan %s → %s via OpenAI…", source.id, target.id)
-    user_prompt = _build_prompt(source, target)
+    logger.info("Generating transition plan %s → %s (%s) via OpenAI…", source.id, target.id, region)
+    user_prompt = _build_prompt(source, target, region)
     raw = await chat_completion(
         prompt=user_prompt,
         system=SYSTEM_PROMPT,
@@ -120,7 +148,6 @@ async def generate_transition_plan(
         logger.error("Failed to parse transition plan JSON: %s", exc)
         payload = _fallback_payload(source, target)
 
-    # Persist to cache
     cache[cache_key] = {
         "cached_at": time.time(),
         "data": payload,
@@ -169,64 +196,12 @@ def _fallback_payload(source: Profession, target: Profession) -> dict:
         "estimated_duration": "1-2 years",
         "difficulty": "moderate",
         "steps": [
-            {
-                "order": 1,
-                "title": "Assess Transferable Skills",
-                "category": "Skill",
-                "duration": "1-2 weeks",
-                "description": "Identify skills from your current role that transfer to the new career.",
-                "resources": ["LinkedIn Skills Assessment"],
-                "priority": "required",
-            },
-            {
-                "order": 2,
-                "title": "Research the Target Field",
-                "category": "Education",
-                "duration": "2-4 weeks",
-                "description": "Learn about the day-to-day, required qualifications, and job market for the target profession.",
-                "resources": ["Bureau of Labor Statistics", "LinkedIn Career Explorer"],
-                "priority": "required",
-            },
-            {
-                "order": 3,
-                "title": "Build Foundation Skills",
-                "category": "Course",
-                "duration": "3-6 months",
-                "description": "Take courses to build the core skills required for the new profession.",
-                "resources": ["Coursera", "Udemy", "edX"],
-                "priority": "required",
-            },
-            {
-                "order": 4,
-                "title": "Earn a Relevant Certification",
-                "category": "Certification",
-                "duration": "2-4 months",
-                "description": "Get certified to validate your new skills and improve your resume.",
-                "resources": [],
-                "priority": "recommended",
-            },
-            {
-                "order": 5,
-                "title": "Build a Portfolio",
-                "category": "Portfolio",
-                "duration": "2-3 months",
-                "description": "Create projects that demonstrate your new skills to potential employers.",
-                "resources": ["GitHub", "Personal Website"],
-                "priority": "required",
-            },
-            {
-                "order": 6,
-                "title": "Network in the New Field",
-                "category": "Networking",
-                "duration": "Ongoing",
-                "description": "Attend meetups, conferences, and connect with professionals in your target field.",
-                "resources": ["LinkedIn", "Meetup.com"],
-                "priority": "recommended",
-            },
+            {"order": 1, "title": "Assess Transferable Skills", "category": "Skill", "duration": "1-2 weeks", "description": "Identify skills from your current role that transfer to the new career.", "resources": ["LinkedIn Skills Assessment"], "priority": "required"},
+            {"order": 2, "title": "Research the Target Field", "category": "Education", "duration": "2-4 weeks", "description": "Learn about the day-to-day, required qualifications, and job market.", "resources": ["LinkedIn Career Explorer"], "priority": "required"},
+            {"order": 3, "title": "Build Foundation Skills", "category": "Course", "duration": "3-6 months", "description": "Take courses to build the core skills required.", "resources": ["Coursera", "Udemy", "edX"], "priority": "required"},
+            {"order": 4, "title": "Earn a Relevant Certification", "category": "Certification", "duration": "2-4 months", "description": "Get certified to validate your new skills.", "resources": [], "priority": "recommended"},
+            {"order": 5, "title": "Build a Portfolio", "category": "Portfolio", "duration": "2-3 months", "description": "Create projects that demonstrate your new skills.", "resources": ["GitHub", "Personal Website"], "priority": "required"},
+            {"order": 6, "title": "Network in the New Field", "category": "Networking", "duration": "Ongoing", "description": "Attend meetups and connect with professionals.", "resources": ["LinkedIn", "Meetup.com"], "priority": "recommended"},
         ],
-        "tips": [
-            "Start small — take on side projects before making the full switch.",
-            "Find a mentor in the target profession.",
-            "Update your resume to highlight transferable skills.",
-        ],
+        "tips": ["Start small.", "Find a mentor.", "Update your resume to highlight transferable skills."],
     }

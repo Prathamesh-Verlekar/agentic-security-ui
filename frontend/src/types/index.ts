@@ -150,6 +150,10 @@ export interface TransitionPlan {
   tips: string[];
 }
 
+/* ─── Region ─── */
+
+export type Region = "usa" | "india";
+
 /* ─── Common ─── */
 
 export interface ErrorDetail {

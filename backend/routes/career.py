@@ -1,11 +1,12 @@
 """
 API routes for the Career Counselor feature.
+Supports region-specific content via ?region=usa|india query parameter.
 """
 
 import logging
 from pathlib import Path
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Query
 from fastapi.responses import FileResponse
 
 from backend.models.schemas import (
@@ -32,6 +33,15 @@ logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/api/v1/careers", tags=["careers"])
 
+VALID_REGIONS = {"usa", "india"}
+DEFAULT_REGION = "usa"
+
+
+def _normalize_region(region: str | None) -> str:
+    if region and region.lower() in VALID_REGIONS:
+        return region.lower()
+    return DEFAULT_REGION
+
 
 def _image_url_for(profession_id: str) -> str:
     """Build the API URL for a profession's image."""
@@ -43,8 +53,7 @@ def _image_url_for(profession_id: str) -> str:
 # ---------------------------------------------------------------------------
 @router.get("", response_model=ApiResponse[list[Profession]])
 async def list_careers():
-    """Return all professions with image URLs baked in."""
-    # We return Profession objects; frontend uses the image endpoint separately
+    """Return all professions."""
     return ApiResponse(success=True, data=PROFESSIONS)
 
 
@@ -65,50 +74,40 @@ async def get_career_transitions():
 # GET /api/v1/careers/transition-plan — generate a step-by-step plan
 # ---------------------------------------------------------------------------
 @router.get("/transition-plan", response_model=ApiResponse[TransitionPlan])
-async def get_transition_plan(source: str, target: str):
+async def get_transition_plan(
+    source: str,
+    target: str,
+    region: str = Query(default="usa", description="Region: usa or india"),
+):
     """Generate an LLM-powered step-by-step transition plan between two professions."""
+    region = _normalize_region(region)
     source_prof = PROFESSIONS_BY_ID.get(source)
     target_prof = PROFESSIONS_BY_ID.get(target)
 
     if not source_prof:
         raise HTTPException(
             status_code=404,
-            detail=ApiResponse(
-                success=False,
-                error=ErrorDetail(message=f"Source profession '{source}' not found"),
-            ).model_dump(),
+            detail=ApiResponse(success=False, error=ErrorDetail(message=f"Source profession '{source}' not found")).model_dump(),
         )
     if not target_prof:
         raise HTTPException(
             status_code=404,
-            detail=ApiResponse(
-                success=False,
-                error=ErrorDetail(message=f"Target profession '{target}' not found"),
-            ).model_dump(),
+            detail=ApiResponse(success=False, error=ErrorDetail(message=f"Target profession '{target}' not found")).model_dump(),
         )
     if source == target:
         raise HTTPException(
             status_code=400,
-            detail=ApiResponse(
-                success=False,
-                error=ErrorDetail(message="Source and target professions must be different"),
-            ).model_dump(),
+            detail=ApiResponse(success=False, error=ErrorDetail(message="Source and target professions must be different")).model_dump(),
         )
 
     try:
-        plan = await generate_transition_plan(source_prof, target_prof)
+        plan = await generate_transition_plan(source_prof, target_prof, region=region)
         return ApiResponse(success=True, data=plan)
     except Exception as exc:
-        logger.exception("Error generating transition plan %s → %s", source, target)
+        logger.exception("Error generating transition plan %s → %s (%s)", source, target, region)
         raise HTTPException(
             status_code=500,
-            detail=ApiResponse(
-                success=False,
-                error=ErrorDetail(
-                    message="Failed to generate transition plan",
-                    details=str(exc),
-                ),
-            ).model_dump(),
+            detail=ApiResponse(success=False, error=ErrorDetail(message="Failed to generate transition plan", details=str(exc))).model_dump(),
         )
 
 
@@ -116,33 +115,28 @@ async def get_transition_plan(source: str, target: str):
 # GET /api/v1/careers/{profession_id} — detailed career info
 # ---------------------------------------------------------------------------
 @router.get("/{profession_id}", response_model=ApiResponse[CareerDetail])
-async def get_career_detail(profession_id: str):
-    """Return LLM-generated career detail for a profession."""
+async def get_career_detail(
+    profession_id: str,
+    region: str = Query(default="usa", description="Region: usa or india"),
+):
+    """Return LLM-generated career detail for a profession, region-specific."""
+    region = _normalize_region(region)
     profession = PROFESSIONS_BY_ID.get(profession_id)
     if not profession:
         raise HTTPException(
             status_code=404,
-            detail=ApiResponse(
-                success=False,
-                error=ErrorDetail(message=f"Profession '{profession_id}' not found"),
-            ).model_dump(),
+            detail=ApiResponse(success=False, error=ErrorDetail(message=f"Profession '{profession_id}' not found")).model_dump(),
         )
 
     try:
         image_url = _image_url_for(profession_id)
-        detail = await generate_career_detail(profession, image_url=image_url)
+        detail = await generate_career_detail(profession, image_url=image_url, region=region)
         return ApiResponse(success=True, data=detail)
     except Exception as exc:
-        logger.exception("Error generating career detail for %s", profession_id)
+        logger.exception("Error generating career detail for %s (%s)", profession_id, region)
         raise HTTPException(
             status_code=500,
-            detail=ApiResponse(
-                success=False,
-                error=ErrorDetail(
-                    message="Failed to generate career detail",
-                    details=str(exc),
-                ),
-            ).model_dump(),
+            detail=ApiResponse(success=False, error=ErrorDetail(message="Failed to generate career detail", details=str(exc))).model_dump(),
         )
 
 
@@ -161,44 +155,37 @@ async def get_career_image(profession_id: str):
         return FileResponse(
             path=str(image_path),
             media_type="image/png",
-            headers={"Cache-Control": "public, max-age=604800"},  # 7 days
+            headers={"Cache-Control": "public, max-age=604800"},
         )
     except Exception as exc:
         logger.exception("Error generating/serving image for %s", profession_id)
-        raise HTTPException(
-            status_code=500,
-            detail=f"Image generation failed: {exc}",
-        )
+        raise HTTPException(status_code=500, detail=f"Image generation failed: {exc}")
 
 
 # ---------------------------------------------------------------------------
 # POST /api/v1/careers/{profession_id}/chat — career counselor chat
 # ---------------------------------------------------------------------------
 @router.post("/{profession_id}/chat", response_model=ApiResponse[CareerChatResponse])
-async def career_chat(profession_id: str, body: CareerChatRequest):
-    """Multi-turn chat with the career counselor agent for a specific profession."""
+async def career_chat(
+    profession_id: str,
+    body: CareerChatRequest,
+    region: str = Query(default="usa", description="Region: usa or india"),
+):
+    """Multi-turn chat with the career counselor agent, region-aware."""
+    region = _normalize_region(region)
     profession = PROFESSIONS_BY_ID.get(profession_id)
     if not profession:
         raise HTTPException(
             status_code=404,
-            detail=ApiResponse(
-                success=False,
-                error=ErrorDetail(message=f"Profession '{profession_id}' not found"),
-            ).model_dump(),
+            detail=ApiResponse(success=False, error=ErrorDetail(message=f"Profession '{profession_id}' not found")).model_dump(),
         )
 
     try:
-        reply = await chat_with_career_agent(profession, body.messages)
+        reply = await chat_with_career_agent(profession, body.messages, region=region)
         return ApiResponse(success=True, data=CareerChatResponse(reply=reply))
     except Exception as exc:
-        logger.exception("Error in career chat for %s", profession_id)
+        logger.exception("Error in career chat for %s (%s)", profession_id, region)
         raise HTTPException(
             status_code=500,
-            detail=ApiResponse(
-                success=False,
-                error=ErrorDetail(
-                    message="Chat failed",
-                    details=str(exc),
-                ),
-            ).model_dump(),
+            detail=ApiResponse(success=False, error=ErrorDetail(message="Chat failed", details=str(exc))).model_dump(),
         )

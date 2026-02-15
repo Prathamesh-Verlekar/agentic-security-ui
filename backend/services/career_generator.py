@@ -1,6 +1,7 @@
 """
 Generate detailed career information for professions via OpenAI.
 Persists cache to a local JSON file with a 10-day TTL per entry.
+Supports region-specific content (India / USA).
 """
 
 import json
@@ -22,6 +23,28 @@ SYSTEM_PROMPT = (
     "You provide accurate, well-researched, and encouraging career guidance. "
     "Return valid JSON only."
 )
+
+# ─── Region context ───────────────────────────────────────────────────────────
+REGION_CONTEXT = {
+    "usa": {
+        "name": "United States",
+        "currency": "USD ($)",
+        "salary_note": "base it on realistic US market data",
+        "education_note": "US education system (Associate's, Bachelor's, Master's, PhD; mention specific US universities or systems when relevant)",
+        "certification_note": "US-recognized certifications and licensing bodies",
+        "job_market_note": "the US job market, including Bureau of Labor Statistics data where applicable",
+    },
+    "india": {
+        "name": "India",
+        "currency": "INR (₹)",
+        "salary_note": "base it on realistic Indian market data in INR (e.g. ₹6,00,000 – ₹25,00,000 per annum). Use the Indian numbering system (lakhs/crores)",
+        "education_note": "Indian education system (10+2, B.Tech/B.E./MBBS/B.Com/BA/LLB, M.Tech/MBA/MD, PhD; mention IITs, IIMs, AIIMS, NLUs, or other top Indian institutions where relevant)",
+        "certification_note": "certifications recognized in India (e.g. CA, CS, GATE, NEET, NET, relevant Indian professional bodies)",
+        "job_market_note": "the Indian job market, including growth in IT hubs (Bangalore, Hyderabad, Pune, NCR), startup ecosystem, and government sector opportunities",
+    },
+}
+
+DEFAULT_REGION = "usa"
 
 
 # ─── File-backed cache helpers ────────────────────────────────────────────────
@@ -51,27 +74,29 @@ def _is_entry_valid(entry: dict) -> bool:
 
 # ─── Prompt builder ───────────────────────────────────────────────────────────
 
-def _build_prompt(profession: Profession) -> str:
-    return f"""Generate a comprehensive career guide for the following profession:
+def _build_prompt(profession: Profession, region: str) -> str:
+    ctx = REGION_CONTEXT.get(region, REGION_CONTEXT[DEFAULT_REGION])
+    return f"""Generate a comprehensive career guide for the following profession **specifically for the {ctx["name"]} market**:
 
 Title: {profession.title}
 Short description: {profession.short_description}
 Tags: {", ".join(profession.tags)}
+Region: {ctx["name"]}
 
 Return ONLY a valid JSON object (no markdown fences) with these exact keys:
 
-- "overview": string (3-5 sentences providing a rich overview of this career)
-- "salary_range": string (e.g. "$60,000 – $180,000 per year" — base it on realistic US market data)
-- "key_skills": array of 8-10 strings (most important skills for this career)
-- "education_requirements": string (2-3 sentences about typical education paths, degrees, certifications)
+- "overview": string (3-5 sentences providing a rich overview of this career in {ctx["name"]}, mentioning region-specific industry context)
+- "salary_range": string ({ctx["salary_note"]}; include entry-level to senior ranges)
+- "key_skills": array of 8-10 strings (most important skills for this career in {ctx["name"]})
+- "education_requirements": string (2-3 sentences about typical education paths using the {ctx["education_note"]}; mention {ctx["certification_note"]})
 - "career_path": array of 4-6 objects, each with:
-    - "stage": string (e.g. "Junior Developer", "Senior Engineer", "Tech Lead")
+    - "stage": string (e.g. "Junior Developer", "Senior Engineer", "Tech Lead" — use titles common in {ctx["name"]})
     - "years": string (e.g. "0-2 years", "3-5 years")
-    - "description": string (1-2 sentences about what this stage involves)
-- "day_in_the_life": string (2-3 paragraph narrative about a typical workday — make it vivid and realistic)
-- "pros": array of 5-7 strings (advantages of this career)
-- "cons": array of 4-6 strings (challenges or disadvantages)
-- "future_outlook": string (2-3 sentences about job market trends, growth projections, and how technology/AI affects this profession)
+    - "description": string (1-2 sentences about what this stage involves in {ctx["name"]})
+- "day_in_the_life": string (2-3 paragraph narrative about a typical workday for this professional in {ctx["name"]} — make it vivid and realistic, mention region-specific workplace culture)
+- "pros": array of 5-7 strings (advantages of this career in {ctx["name"]})
+- "cons": array of 4-6 strings (challenges or disadvantages specific to {ctx["name"]})
+- "future_outlook": string (2-3 sentences about {ctx["job_market_note"]}, growth projections, and how technology/AI affects this profession)
 """
 
 
@@ -80,23 +105,27 @@ Return ONLY a valid JSON object (no markdown fences) with these exact keys:
 async def generate_career_detail(
     profession: Profession,
     image_url: str = "",
+    region: str = DEFAULT_REGION,
 ) -> CareerDetail:
     """
-    Return a CareerDetail for the given profession.
+    Return a CareerDetail for the given profession and region.
     Serves from cache when entry < 10 days old; otherwise generates via OpenAI.
     """
-    cache_key = profession.id
+    region = region.lower() if region else DEFAULT_REGION
+    if region not in REGION_CONTEXT:
+        region = DEFAULT_REGION
+
+    cache_key = f"{profession.id}__{region}"
     cache = _load_cache()
 
     if cache_key in cache and _is_entry_valid(cache[cache_key]):
         logger.info("Career cache hit for %s", cache_key)
         data = cache[cache_key]["data"]
-        # Update image_url in case it changed
         data["image_url"] = image_url
         return _payload_to_detail(data, profession, image_url)
 
-    logger.info("Generating career detail for %s via OpenAI…", cache_key)
-    user_prompt = _build_prompt(profession)
+    logger.info("Generating career detail for %s (%s) via OpenAI…", cache_key, region)
+    user_prompt = _build_prompt(profession, region)
     raw = await chat_completion(
         prompt=user_prompt,
         system=SYSTEM_PROMPT,
@@ -114,7 +143,6 @@ async def generate_career_detail(
         logger.error("Failed to parse career JSON: %s", exc)
         payload = _fallback_payload(profession)
 
-    # Persist to cache
     cache[cache_key] = {
         "cached_at": time.time(),
         "data": payload,
